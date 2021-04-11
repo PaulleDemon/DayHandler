@@ -5,7 +5,6 @@ from PyQt5 import QtWidgets, QtGui
 
 from CustomizedWidgets import HorizontalTabs
 from Tabs import HomeTab, TodoTab, ProjectsTab, GoalTab, Settings
-from DbHandler import DbChangeNotifier
 
 
 class TabbedWidget(QtWidgets.QWidget):
