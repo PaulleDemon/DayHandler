@@ -1,12 +1,12 @@
-import datetime
 import os
 import re
 import shutil
 import sqlite3
 import threading
 import concurrent.futures
-import DbHandler
+from DataBaseOperations import DBHandler, Query
 
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 
@@ -43,23 +43,9 @@ class SelectTodo(QtWidgets.QWidget):
 
         self.load_tags()
 
-    def get_tags_from_db(self):
-        with sqlite3.connect(self.sql_file, check_same_thread=False) as conn:
-            curr = conn.cursor()
-            try:
-                curr.execute("SELECT * FROM tag")
-                items = curr.fetchall()
-
-            except sqlite3.OperationalError:
-                items = []
-
-        return items
-
     def load_tags(self):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(self.get_tags_from_db)
-            self.tag_items = future.result()
 
+        self.tag_items = DBHandler.get_data(Query.get_all_tags)
         for item in self.tag_items:
             self.add_item(item[0], item[1])
 
@@ -75,7 +61,7 @@ class SelectTodo(QtWidgets.QWidget):
         self.combo_box.setCurrentIndex(self.combo_box.count() - 1)
 
     def add_new_tag(self):  # This method will call a pop-up to create a new tag
-        self._create_db()
+
         new = NewTag(self)
 
         if new.exec():
@@ -86,35 +72,30 @@ class SelectTodo(QtWidgets.QWidget):
                 os.mkdir(self.tag_image_dir)
 
             if os.path.isdir(self.tag_image_dir):
-                thread = threading.Thread(target=self.commit_to_db, daemon=True)
-                thread.start()
-
-    def _create_db(self):  # creates the sql table if it doesn't exist
-        with sqlite3.connect(self.sql_file) as conn:
-            conn.execute("CREATE TABLE IF NOT EXISTS tag(tag_name VARCHAR(30) UNIQUE, tag_path VARCHAR(100) "
-                         "UNIQUE)")
+                self.commit_to_db()
 
     def commit_to_db(self):  # All the files saving will be done here
 
         # makes a copy of the file and places it in tag_image folder
         copy_path = shutil.copy2(self.new_tag_img, f'{self.tag_image_dir}/')
         self.new_tag_img = copy_path
+        DBHandler.insert_to_table(Query.insert_to_tag, self.new_tag_name, copy_path)
 
-        with sqlite3.connect(self.sql_file, check_same_thread=False) as conn:
+    def get_tag(self):  # returns tag_name and image_path as a list
+        try:
+            if self.combo_box.itemText(0) != self.place_holder_text:
+                print("Current: ", self.combo_box.currentText())
+                current_tag = self.combo_box.currentText()
+                current_selected_tag = DBHandler.get_data(Query.get_tag_where, current_tag)[0]
+                return current_selected_tag
 
-            try:
-                conn.execute("INSERT INTO tag(tag_name, tag_path) VALUES(?, ?)", (self.new_tag_name, copy_path))
-                conn.commit()
-                self.db_notifier.notify()
-
-            except sqlite3.IntegrityError:
-                print("Not Unique")
-
-    def get_tag(self):  # method that returns current tag from combobox
-        return self.combo_box.currentIndex() if self.combo_box.itemText(0) != self.place_holder_text else None
+        except Exception as e:
+            print("Exception: Occured", e)
+            return None
 
 
 class NewTag(QtWidgets.QDialog):
+    # creates a new tag window where the user will be asked to enter a tag name and an image
 
     def __init__(self, parent, *args, **kwargs):
         super(NewTag, self).__init__(*args, **kwargs)
@@ -216,11 +197,11 @@ class NewTag(QtWidgets.QDialog):
 
         def check_db(self):
             db_path, img_folder = self.parent.get_file_names()
-            items = []
-            with sqlite3.connect(db_path, check_same_thread=False) as conn:
-                curr = conn.cursor()
-                curr.execute("SELECT * FROM tag")
-                items = curr.fetchall()
+            # with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            #     curr = conn.cursor()
+            #     curr.execute("SELECT * FROM tag")
+            #     items = curr.fetchall()
+            items = DBHandler.get_data(Query.get_all_tags)
 
             tag_name, file_loc = self.get_tag()
             img_exists = os.path.isfile(
@@ -228,7 +209,6 @@ class NewTag(QtWidgets.QDialog):
 
             return any(tag_name == x[0] for x in items) or img_exists
 
-        return_val = False
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future = executor.submit(check_db, self)
             return_val = future.result()
@@ -266,12 +246,24 @@ class ToDoWidget(QtWidgets.QWidget):
         self.widget_layout.addWidget(self.time_info, 0, 0)
         self.widget_layout.addWidget(self.toDo_info, 1, 0)
 
-    def setText(self, message):
-        self.toDo_info.setText(message)
-        self.time_info.setText(
-            datetime.datetime.now().strftime("%A, %b %d, %Y, %H:%M %p"))  # todo: change this to the time the user picks
+    def set_info(self, *args):
+        print("args", *args)
+        date_time, tag_name, tag_img_path, text = args
 
-    def setTag(self, tag, imgPath):
+        def change_format(_date_time):
+            _date, _time = _date_time.split()
+            time_24hrs = datetime.strptime(_time, "%H:%M:%S")
+            date_yy_mm_dd = datetime.strptime(_date, "%Y-%m-%d")
+            return date_yy_mm_dd.strftime("%d/%m/%Y"), time_24hrs.strftime("%I:%M %p")
+
+        date, time = change_format(date_time)
+        print(f"date: {date}, time: {time}")
+
+        self.time_info.setText(f"{time} {date}")
+        self.toDo_info.setText(text)
+        self.set_tag(tag_name, tag_img_path)
+
+    def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
 
 

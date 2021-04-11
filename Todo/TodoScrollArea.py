@@ -26,8 +26,8 @@ class TodoScrollArea(QtWidgets.QWidget):
 
     def addTodo(self, text: str, tag_name: str, tag_icon: str):
         todo = ToDoWidget.ToDoWidget()
-        todo.setText(text)
-        todo.setTag(tag_name, tag_icon)
+        todo.set_info()
+        todo.set_tag(tag_name, tag_icon)
         todo.setStyleSheet('background: blue')
 
         self.add_event(todo)

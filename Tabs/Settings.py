@@ -1,6 +1,6 @@
-import sqlite3
-import concurrent.futures
-import threading
+import os
+
+from DataBaseOperations import DBHandler, Query
 from PyQt5 import QtWidgets, QtGui
 from CustomizedWidgets import Switch
 from Todo.TagDisplayer import TagDisplayer
@@ -28,59 +28,34 @@ class Settings(QtWidgets.QWidget):
 
         self.tag_items = None
         self.load_tags()
-        print("SELF: ", self)
-
-    def get_tags_from_db(self):
-        with sqlite3.connect(self.sql_file, check_same_thread=False) as conn:
-            curr = conn.cursor()
-            try:
-                curr.execute("SELECT * FROM tag  ORDER BY tag_name ASC;")
-                items = curr.fetchall()
-
-            except sqlite3.OperationalError:
-                print("SQl error occured")
-                items = []
-
-        return items
-
-    def db_update(self):  # todo: this doesn't update correctly temporarily use the reload button
-        # self.load_tags()
-        # print("EMIT Received", self)
-        pass
 
     def load_tags(self):
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(self.get_tags_from_db)
-            self.tag_items = future.result()
-
+        self.tag_items = DBHandler.get_data(Query.get_all_tags)
+        print("Tag items: ", self.tag_items)
         self.tags_scroll_area.delete_all()
 
-        print("Tags from DB: ", self.tag_items)
+        # print("Tags from DB: ", self.tag_items)
         for tag in self.tag_items:
             new_tag = TagDisplayer(tag[0], tag[1])
             new_tag.DeleteTagSignal.connect(self.delete_tag)
             self.add_to_scroll_area(new_tag)
 
-    def delete_tag_from_db(self, tag_name, tag_img_path):
-        print("Thread: ", tag_name, tag_img_path)
-        with sqlite3.connect(self.sql_file, check_same_thread=False) as conn:
-            conn.execute("DELETE FROM tag WHERE tag_name = (?) AND tag_path = (?)", (tag_name, tag_img_path))
-            conn.commit()
-            # curr = conn.cursor()
-            # curr.execute("SELECT * FROM tag  ORDER BY tag_name ASC;")
-            # items = curr.fetchall()
-            # print("Items: ", items)
-        # todo delete the file also from tag_images pls do it in the same thread
-
     def delete_tag(self, tag_name: str, tag_img_path: str):
-        print("Notified")
-        thread = threading.Thread(target=self.delete_tag_from_db, args=(tag_name, tag_img_path))
-        thread.start()
+
+        try:
+            DBHandler.delete_data(Query.delete_tag, tag_name, tag_img_path)
+            os.remove(tag_img_path)
+
+        except FileNotFoundError:
+            print("File not found")
 
     def add_to_scroll_area(self, tag: TagDisplayer):
         self.tags_scroll_area.add_tag(tag)
-        # print("Widget: ", self.tags_scroll_area.count_widgets(), self.tags_scroll_area)
+
+    def db_changed(self):
+        print("Notified the change")
+        self.load_tags()
 
 
 class AvailableTagScrollArea(QtWidgets.QWidget):
@@ -120,12 +95,12 @@ class AvailableTagScrollArea(QtWidgets.QWidget):
 
     def delete_all(self):
         layout = self.scroll_layout
-        print("Deleted ALl")
+        # print("Deleted ALl")
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
-            print("Deleting")
+            # print("Deleting")
             if widget is not None:
                 widget.deleteLater()
 
-        print("scroll Layout :", layout.count())
+        # print("scroll Layout :", layout.count())

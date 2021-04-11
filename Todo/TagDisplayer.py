@@ -33,7 +33,7 @@ class TagDisplayer(QtWidgets.QWidget):
             delete = msg.question(self, "Confirmation", "Are you sure you want to delete this tag? ", msg.Yes | msg.No)
 
         messageBox(self)
-        if delete == QtWidgets.QMessageBox.Yes:  # todo must delete from database also
+        if delete == QtWidgets.QMessageBox.Yes:
             self.DeleteTagSignal.emit(self.tag_name.text(), self.img_path)
             self.deleteLater()
 

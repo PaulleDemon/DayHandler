@@ -1,9 +1,12 @@
 import sys
+from DataBaseOperations import DBHandler
+
 from PyQt5 import QtWidgets, QtGui
 
 from CustomizedWidgets import HorizontalTabs
 from Tabs import HomeTab, TodoTab, ProjectsTab, GoalTab, Settings
 from DbHandler import DbChangeNotifier
+
 
 class TabbedWidget(QtWidgets.QWidget):
 
@@ -18,13 +21,15 @@ class TabbedWidget(QtWidgets.QWidget):
 
         self.db_change_notifier = DbChangeNotifier()
 
+        DBHandler.initialize_files()
+
         self.home_page = HomeTab.HomePage()
         self.todo_page = TodoTab.TodoPage(self.db_change_notifier)
         self.program_page = ProjectsTab.ProgramPage(self.db_change_notifier)
         self.goal_page = GoalTab.GoalPage(self.db_change_notifier)
         self.settings = Settings.Settings()
 
-        self.db_change_notifier.register(self.settings)
+        DBHandler.register(self.settings)
 
         self.tabs.addTab(self.home_page, QtGui.QIcon(r'Resources/Images/Home_Black.png'), "Home Page")
         self.tabs.addTab(self.todo_page, QtGui.QIcon(r'Resources/Images/Todo_black.png'), "Todo page")
