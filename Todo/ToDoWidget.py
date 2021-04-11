@@ -14,7 +14,7 @@ class SelectTodo(QtWidgets.QWidget):
 
     """ This create the combobox with existing tags and a button to create new tags"""
 
-    def __init__(self, db_notifier, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(SelectTodo, self).__init__(*args, **kwargs)
 
         self.tag_image_dir = 'UserResources/tag_images'
@@ -22,8 +22,6 @@ class SelectTodo(QtWidgets.QWidget):
         self.new_tag_name = ""
         self.new_tag_img = ""
         self.tag_items = []
-        self.db_notifier = db_notifier
-
         self.place_holder_text = "--- Select Tag ---"
 
         self.combo_box = QtWidgets.QComboBox()
@@ -197,10 +195,6 @@ class NewTag(QtWidgets.QDialog):
 
         def check_db(self):
             db_path, img_folder = self.parent.get_file_names()
-            # with sqlite3.connect(db_path, check_same_thread=False) as conn:
-            #     curr = conn.cursor()
-            #     curr.execute("SELECT * FROM tag")
-            #     items = curr.fetchall()
             items = DBHandler.get_data(Query.get_all_tags)
 
             tag_name, file_loc = self.get_tag()
@@ -220,6 +214,7 @@ class NewTag(QtWidgets.QDialog):
         self.accept()
 
 
+# todo_scroll the display of the event is not good looking there is lot of space between date and todo_scroll info
 class ToDoWidget(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
 
@@ -247,7 +242,6 @@ class ToDoWidget(QtWidgets.QWidget):
         self.widget_layout.addWidget(self.toDo_info, 1, 0)
 
     def set_info(self, *args):
-        print("args", *args)
         date_time, tag_name, tag_img_path, text = args
 
         def change_format(_date_time):
@@ -280,7 +274,6 @@ class Tag(QtWidgets.QWidget):
 
         self.hLayout = QtWidgets.QHBoxLayout()
         self.hLayout.setContentsMargins(0, 0, 0, 0)
-        self.hLayout.setSpacing(0)
 
         self.setLayout(self.hLayout)
 

@@ -12,13 +12,16 @@ class Query:
                  "tag_img_path VARCHAR(100), goal_text VARCHAR(2000))"
 
     todo_table = "CREATE TABLE IF NOT EXISTS todo(datetime DATETIME , tag_name VARCHAR(30), " \
-                 "tag_img_path VARCHAR(100), goal_text VARCHAR(2000))"
+                 "tag_img_path VARCHAR(100), todo_text VARCHAR(2000))"
 
+    insert_to_tag = "INSERT INTO tag(tag_name, tag_path) VALUES(?, ?)"
     insert_to_goal = "INSERT INTO goal VALUES(?, ?, ?, ?)"
     insert_to_todo = "INSERT INTO todo VALUES(?, ?, ?, ?)"
-    insert_to_tag = "INSERT INTO tag(tag_name, tag_path) VALUES(?, ?)"
 
     get_all_tags = "SELECT * FROM tag ORDER BY tag_name COLLATE NOCASE ASC"
+    get_all_goals = "SELECT * FROM goal ORDER BY datetime ASC"
+    get_all_todo = "SELECT * FROM todo ORDER BY datetime ASC"
+
     get_tag_where = "SELECT * FROM tag WHERE tag_name = (?)"
 
     delete_tag = "DELETE FROM tag WHERE tag_name = (?) AND tag_path = (?)"

@@ -5,14 +5,12 @@ from CreateWindow import TimePicker
 from datetime import datetime
 
 
-# todo: add character limit to textbox
+# todo_scroll: add character limit to textbox
 class AddWindow(QtWidgets.QDialog):
     """ This window creates the with calender time-picker, a tag-selector and a Text box"""
 
-    def __init__(self, db_notifier, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(AddWindow, self).__init__(*args, **kwargs)
-
-        self.db_notifier = db_notifier
 
         self.setWindowTitle("Create")
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
@@ -40,7 +38,7 @@ class AddWindow(QtWidgets.QDialog):
         self.h_layout.addWidget(self.calender)
         self.h_layout.addWidget(self.time_btn)
 
-        self.tag = ToDoWidget.SelectTodo(self.db_notifier)
+        self.tag = ToDoWidget.SelectTodo()
 
         self.text = QtWidgets.QTextEdit()
         self.text.setAcceptRichText(False)
@@ -50,6 +48,7 @@ class AddWindow(QtWidgets.QDialog):
         self.cancel = QtWidgets.QPushButton("Cancel")
 
         self.create_new.clicked.connect(self.confirm)
+        self.cancel.clicked.connect(self.close)
 
         self.h_ok_cancel_layout.addWidget(self.create_new)
         self.h_ok_cancel_layout.addWidget(self.cancel)
@@ -109,7 +108,7 @@ class AddWindow(QtWidgets.QDialog):
 
         self.accept()
 
-    # todo: instead of `self.tag.get_tag()` we must pass just the text and the image path
+    # todo_scroll: instead of `self.tag.get_tag()` we must pass just the text and the image path
     def get_info(self):
         return self.date, self.time, self.text.toPlainText(), *self.tag.get_tag()
 

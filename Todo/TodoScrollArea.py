@@ -31,3 +31,17 @@ class TodoScrollArea(QtWidgets.QWidget):
         todo.setStyleSheet('background: blue')
 
         self.add_event(todo)
+
+    def delete_at_index(self, index):  # deletes the widgets at specific index
+        try:
+            self.scroll_layout.itemAt(index).widget().deleteLater()
+        except Exception:
+            pass
+
+    def delete_all(self):  # deletes all the widgets in the scroll area
+        layout = self.scroll_layout
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            widget.deleteLater()
+

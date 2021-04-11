@@ -5,10 +5,8 @@ from CreateWindow import AddWindow
 
 class ProgramPage(QtWidgets.QWidget):
 
-    def __init__(self, db_change, *args, **kwargs):
+    def __init__(self,  *args, **kwargs):
         super(ProgramPage, self).__init__(*args, **kwargs)
-
-        self.db_change_notifier = db_change
 
         self.hLayout = QtWidgets.QHBoxLayout(self)
 
@@ -20,7 +18,7 @@ class ProgramPage(QtWidgets.QWidget):
         self.hLayout.addWidget(self.create_new)
 
     def createNewPgm(self):
-        window = AddWindow.AddWindow(self.db_change_notifier)
+        window = AddWindow.AddWindow()
 
         if window.exec():
             pass

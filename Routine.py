@@ -17,16 +17,14 @@ class TabbedWidget(QtWidgets.QWidget):
         self.vlayout.setContentsMargins(0, 0, 0 , 0)
 
         self.tabs = HorizontalTabs.TabWidget()
-        self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo: remove this and paste it in qss
-
-        self.db_change_notifier = DbChangeNotifier()
+        self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
 
         DBHandler.initialize_files()
 
         self.home_page = HomeTab.HomePage()
-        self.todo_page = TodoTab.TodoPage(self.db_change_notifier)
-        self.program_page = ProjectsTab.ProgramPage(self.db_change_notifier)
-        self.goal_page = GoalTab.GoalPage(self.db_change_notifier)
+        self.todo_page = TodoTab.TodoPage()
+        self.program_page = ProjectsTab.ProgramPage()
+        self.goal_page = GoalTab.GoalPage()
         self.settings = Settings.Settings()
 
         DBHandler.register(self.settings)

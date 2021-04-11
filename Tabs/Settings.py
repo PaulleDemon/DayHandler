@@ -6,6 +6,7 @@ from CustomizedWidgets import Switch
 from Todo.TagDisplayer import TagDisplayer
 
 
+# todo: please check before deleting tags if there are events associated with that tag
 class Settings(QtWidgets.QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -20,7 +21,8 @@ class Settings(QtWidgets.QWidget):
         self.grid.addWidget(QtWidgets.QLabel("Theme"), 0, 0)
         self.grid.addWidget(self.switch_btn, 0, 1)
 
-        self.btn = QtWidgets.QPushButton("Reload")
+        self.btn = QtWidgets.QPushButton("Reload")  # todo: this button is no longer needed
+        self.btn = QtWidgets.QPushButton("Reload")  # todo: this button is no longer needed
         self.btn.clicked.connect(self.load_tags)
 
         self.grid.addWidget(self.tags_scroll_area, 1, 0)
@@ -95,12 +97,7 @@ class AvailableTagScrollArea(QtWidgets.QWidget):
 
     def delete_all(self):
         layout = self.scroll_layout
-        # print("Deleted ALl")
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
-            # print("Deleting")
-            if widget is not None:
-                widget.deleteLater()
-
-        # print("scroll Layout :", layout.count())
+            widget.deleteLater()
