@@ -21,12 +21,7 @@ class Settings(QtWidgets.QWidget):
         self.grid.addWidget(QtWidgets.QLabel("Theme"), 0, 0)
         self.grid.addWidget(self.switch_btn, 0, 1)
 
-        self.btn = QtWidgets.QPushButton("Reload")  # todo: this button is no longer needed
-        self.btn = QtWidgets.QPushButton("Reload")  # todo: this button is no longer needed
-        self.btn.clicked.connect(self.load_tags)
-
         self.grid.addWidget(self.tags_scroll_area, 1, 0)
-        self.grid.addWidget(self.btn, 2, 0)
 
         self.tag_items = None
         self.load_tags()
@@ -43,9 +38,18 @@ class Settings(QtWidgets.QWidget):
             new_tag.DeleteTagSignal.connect(self.delete_tag)
             self.add_to_scroll_area(new_tag)
 
-    def delete_tag(self, tag_name: str, tag_img_path: str):
+    def delete_tag(self, tag_name: str, tag_img_path: str, associated_event: list):
+
+        associated_dict= {"goals": [Query.delete_goal_where_tag, "goal_page"],
+                          "todos": [Query.delete_todo_where_tag, "todo_page"]}
 
         try:
+
+            for event in associated_event:
+                query, notify_page = associated_dict[event]
+                DBHandler.delete_data(query, tag_name)
+                DBHandler.notify(notify_page)
+
             DBHandler.delete_data(Query.delete_tag, tag_name, tag_img_path)
             os.remove(tag_img_path)
 

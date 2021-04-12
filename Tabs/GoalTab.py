@@ -62,3 +62,7 @@ class GoalPage(QtWidgets.QWidget):
         if window.exec():
             self._add_goal(*window.get_info())
             self.load_goals()
+
+    def db_changed(self):
+        print("Notified the change")
+        self.load_goals()

@@ -5,7 +5,6 @@ import concurrent.futures
 
 
 class Query:
-
     tag_table = "CREATE TABLE IF NOT EXISTS tag(tag_name VARCHAR(30) UNIQUE, tag_path VARCHAR(100) UNIQUE)"
 
     goal_table = "CREATE TABLE IF NOT EXISTS goal(datetime DATETIME , tag_name VARCHAR(30), " \
@@ -23,13 +22,17 @@ class Query:
     get_all_todo = "SELECT * FROM todo ORDER BY datetime ASC"
 
     get_tag_where = "SELECT * FROM tag WHERE tag_name = (?)"
+    get_goal_where_tag = "SELECT * FROM goal WHERE tag_name = (?)"
+    get_todo_where_tag = "SELECT * FROM todo WHERE tag_name = (?)"
 
     delete_tag = "DELETE FROM tag WHERE tag_name = (?) AND tag_path = (?)"
+    delete_goal_where_tag = "DELETE FROM goal WHERE tag_name = (?)"
+    delete_todo_where_tag = "DELETE FROM todo WHERE tag_name = (?)"
 
 
 class DBHandler:
     _sql_file = r"UserResources/userTodo.db"
-    notify_cls = set()  # stores the class instances that needs to be notified of the change in database
+    registered_classes = {}  # stores the class instances that needs to be notified of the change in database
 
     user_resources = r"UserResources"
     img_folder = r"UserResources/tag_images"
@@ -37,7 +40,8 @@ class DBHandler:
     @classmethod
     def initialize_files(cls):  # creates the folder if it doesn't exist
 
-        if not os.path.isdir(cls.user_resources):  # check if the UserResources folder exists if it doesn't exits create it
+        if not os.path.isdir(
+                cls.user_resources):  # check if the UserResources folder exists if it doesn't exits create it
             os.mkdir(cls.user_resources)
 
         if not os.path.isdir(cls.img_folder):
@@ -83,7 +87,7 @@ class DBHandler:
 
     @classmethod
     def create_table(cls, sql_query: Query):  # calls _add_table from thread
-        thread = threading.Thread(target=cls._add_table_db, args=(sql_query, ))
+        thread = threading.Thread(target=cls._add_table_db, args=(sql_query,))
         thread.start()
         thread.join()
 
@@ -100,24 +104,7 @@ class DBHandler:
         thread.join()
 
         if insert_query == Query.insert_to_tag:
-            cls.notify()
-
-    @classmethod
-    def register(cls, instance):  # adds the instances to the notify set
-        cls.notify_cls.add(instance)
-
-    @classmethod
-    def unregister(cls, instance):  # removes the instances from the notify set
-        cls.notify_cls.remove(instance)
-
-    @classmethod
-    def notify(cls): # call's the db_changed method in all the registered classes
-        for instances in cls.notify_cls:
-            try:
-                instances.db_changed()
-
-            except NameError:
-                raise NotImplementedError
+            cls.notify("settings")
 
     @classmethod
     def _get_data_from_db(cls, query: Query, *values):  # gets value from db
@@ -148,4 +135,45 @@ class DBHandler:
 
     @classmethod
     def delete_data(cls, query, *where_value):
+        print("QUERY: ", query, where_value)
         thread = threading.Thread(target=cls._delete_data_from_db, args=(query, where_value))
+        thread.start()
+        thread.join()
+
+    @classmethod
+    def get_notify_classes(cls):  # returns dict of all the classes registered
+        return cls.registered_classes
+
+    @classmethod
+    def register(cls, key: str, instance):  # adds the instances to the notify set
+        if key not in cls.registered_classes.keys():
+            cls.registered_classes[key] = instance
+
+        else:
+            raise Exception(f"{key} Key already exists")
+
+    @classmethod
+    def unregister(cls, key: str):  # removes the instances from the notify set
+        cls.registered_classes.pop(key)
+
+    @classmethod
+    def notify(cls, key=None):  # call's the db_changed method in all the registered classes
+        # if key provided notifies only particular class
+
+        if key:
+            try:
+                cls.registered_classes[key].db_changed()
+
+            except NameError:
+                raise NotImplementedError
+
+            except KeyError:
+                print("No such key")
+
+        else:
+            for instances in cls.registered_classes.values():
+                try:
+                    instances.db_changed()
+
+                except NameError:
+                    raise NotImplementedError

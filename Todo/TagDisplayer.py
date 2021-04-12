@@ -1,9 +1,9 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
+from DataBaseOperations import DBHandler, Query
 
 
 class TagDisplayer(QtWidgets.QWidget):
-
-    DeleteTagSignal = QtCore.pyqtSignal(str, str)
+    DeleteTagSignal = QtCore.pyqtSignal(str, str, list)
 
     def __init__(self, tag_name, img_path, *args, **kwargs):
         super(TagDisplayer, self).__init__(*args, **kwargs)
@@ -27,13 +27,37 @@ class TagDisplayer(QtWidgets.QWidget):
     def delete_tag(self):
         delete = QtWidgets.QMessageBox.No
 
+        associates = ""
+        associate_events = []
+        associate_msg = "There are {events} associated with this tag"
+
+        tag = self.tag_name.text()
+
         def messageBox(self):
             nonlocal delete
             msg = QtWidgets.QMessageBox()
-            delete = msg.question(self, "Confirmation", "Are you sure you want to delete this tag? ", msg.Yes | msg.No)
+            msg.setIcon(msg.NoIcon)
 
+            message =  f"Are you sure you want to delete this tag? "
+
+            if associate_events:
+                message = f"<div style='color:red'>{associates}</div>. " + message
+
+            delete = msg.question(self, "Confirmation", message, msg.Yes | msg.No)
+
+        goal = DBHandler.get_data(Query.get_goal_where_tag, tag)
+        todo = DBHandler.get_data(Query.get_todo_where_tag, tag)
+
+        if goal:
+            associate_events.append("goals")
+
+        if todo:
+            associate_events.append("todos")
+
+        associates = associate_msg.format(events=', '.join(associate_events))
         messageBox(self)
-        if delete == QtWidgets.QMessageBox.Yes:
-            self.DeleteTagSignal.emit(self.tag_name.text(), self.img_path)
-            self.deleteLater()
 
+        print("associated events", associate_events)
+        if delete == QtWidgets.QMessageBox.Yes:
+            self.DeleteTagSignal.emit(tag, self.img_path, associate_events)
+            self.deleteLater()

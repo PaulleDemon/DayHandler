@@ -78,6 +78,7 @@ class SelectTodo(QtWidgets.QWidget):
         copy_path = shutil.copy2(self.new_tag_img, f'{self.tag_image_dir}/')
         self.new_tag_img = copy_path
         DBHandler.insert_to_table(Query.insert_to_tag, self.new_tag_name, copy_path)
+        DBHandler.notify("settings")  # notifies the setting class about the change
 
     def get_tag(self):  # returns tag_name and image_path as a list
         try:

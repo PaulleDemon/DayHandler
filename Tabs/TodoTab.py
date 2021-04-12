@@ -60,3 +60,6 @@ class TodoPage(QtWidgets.QWidget):
             self.load_todo()
 
 
+    def db_changed(self):
+        print("Notified the change")
+        self.load_todo()
