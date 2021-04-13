@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from DataBaseOperations import DBHandler, Query
+from ImagePaths import ImagePaths
 
 
 class TagDisplayer(QtWidgets.QWidget):
@@ -13,7 +14,7 @@ class TagDisplayer(QtWidgets.QWidget):
 
         self.tag_name = QtWidgets.QLabel(tag_name)
         self.tag_image = QtWidgets.QLabel()
-        self.deleteBtn = QtWidgets.QPushButton(icon=QtGui.QIcon(r'Resources/Images/Delete_black.png'))
+        self.deleteBtn = QtWidgets.QPushButton(icon=QtGui.QIcon(ImagePaths.get_image("delete")))
         self.deleteBtn.clicked.connect(self.delete_tag)
 
         self.img = QtGui.QPixmap(self.img_path)

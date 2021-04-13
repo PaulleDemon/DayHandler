@@ -1,8 +1,8 @@
 import os
 import re
 import shutil
-import sqlite3
-import threading
+
+import ImagePaths
 import concurrent.futures
 from DataBaseOperations import DBHandler, Query
 
@@ -215,7 +215,7 @@ class NewTag(QtWidgets.QDialog):
         self.accept()
 
 
-# todo_scroll the display of the event is not good looking there is lot of space between date and todo_scroll info
+# todo: scroll the display of the event is not good looking there is lot of space between date and todo_scroll info
 class ToDoWidget(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
 
@@ -240,10 +240,19 @@ class ToDoWidget(QtWidgets.QWidget):
 
         self.event_type = QtWidgets.QLabel() # used to specify the type of event when displaying in home page
 
-        self.widget_layout.addWidget(self.event_type, 0, 0)
-        self.widget_layout.addWidget(self.time_info, 1, 0)
-        self.widget_layout.addWidget(self.tag, 1, 1, QtCore.Qt.AlignRight)
-        self.widget_layout.addWidget(self.toDo_info, 2, 0)
+        self.edit_btn = QtWidgets.QPushButton("🖊")
+        self.delete_btn = QtWidgets.QPushButton()
+        self.delete_btn.setIcon(QtGui.QIcon(ImagePaths.ImagePaths.get_image("delete")))
+
+        # self.edit_btn.clicked.connect(self.edit)
+        # self.delete_event.clicked.connect(self.edit)
+        self.widget_layout.addWidget(self.delete_btn, 0, 0)
+        self.widget_layout.addWidget(self.edit_btn, 0, 1)
+
+        self.widget_layout.addWidget(self.event_type, 1, 0)
+        self.widget_layout.addWidget(self.time_info, 2, 0)
+        self.widget_layout.addWidget(self.tag, 2, 1, QtCore.Qt.AlignRight)
+        self.widget_layout.addWidget(self.toDo_info, 3, 0)
 
     def set_info(self, *args):
         date_time, tag_name, tag_img_path, text = args
@@ -266,6 +275,8 @@ class ToDoWidget(QtWidgets.QWidget):
 
     def set_event_type(self, event):
         self.event_type.setText(f"Event type: {event}")
+
+    # def edit(self):
 
 
 class Tag(QtWidgets.QWidget):

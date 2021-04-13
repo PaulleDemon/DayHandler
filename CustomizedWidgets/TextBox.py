@@ -39,16 +39,19 @@ class TextBox(QtWidgets.QTextEdit):
             self.setText(self.toPlainText()[:self.maxChar])
 
         if self.charCount < self.maxChar // 3:
-            self.label_palette.setColor(self.label_palette.WindowText,  QtGui.QColor(QtCore.Qt.darkGreen))
-            self.label.setPalette(self.label_palette)
+            self.label.setStyleSheet("color: #00d107")
+            # self.label_palette.setColor(self.label_palette.WindowText,  QtGui.QColor(QtCore.Qt.darkGreen))
+            # self.label.setPalette(self.label_palette)
 
         if self.maxChar // 3 <= self.charCount < self.maxChar // 1.5:
-            self.label_palette.setColor(self.label_palette.WindowText, QtGui.QColor(QtCore.Qt.darkYellow))
-            self.label.setPalette(self.label_palette)
+            self.label.setStyleSheet("color: #cae002")
+            # self.label_palette.setColor(self.label_palette.WindowText, QtGui.QColor(QtCore.Qt.darkYellow))
+            # self.label.setPalette(self.label_palette)
 
         elif self.charCount >= self.maxChar // 1.5:
-            self.label_palette.setColor(self.label_palette.WindowText, QtGui.QColor(QtCore.Qt.red))
-            self.label.setPalette(self.label_palette)
+            self.label.setStyleSheet("color: #fa0f23")
+            # self.label_palette.setColor(self.label_palette.WindowText, QtGui.QColor(QtCore.Qt.red))
+            # self.label.setPalette(self.label_palette)
 
         self.label.setText(f'{self.charCount}/{self.maxChar}')
 

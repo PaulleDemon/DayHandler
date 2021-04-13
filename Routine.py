@@ -1,8 +1,8 @@
 import sys
-from DataBaseOperations import DBHandler
 
+from ImagePaths import ImagePaths
 from PyQt5 import QtWidgets, QtGui
-
+from DataBaseOperations import DBHandler
 from CustomizedWidgets import HorizontalTabs
 from Tabs import HomeTab, TodoTab, ProjectsTab, GoalTab, Settings
 
@@ -16,7 +16,7 @@ class TabbedWidget(QtWidgets.QWidget):
         self.vlayout.setContentsMargins(0, 0, 0 , 0)
 
         self.tabs = HorizontalTabs.TabWidget()
-        self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
+        # self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
 
         DBHandler.initialize_files()
 
@@ -32,11 +32,11 @@ class TabbedWidget(QtWidgets.QWidget):
         DBHandler.register("todo_page", self.todo_page)
         DBHandler.register("settings", self.settings)
 
-        self.tabs.addTab(self.home_page, QtGui.QIcon(r'Resources/Images/Home_Black.png'), "Home Page")
-        self.tabs.addTab(self.todo_page, QtGui.QIcon(r'Resources/Images/Todo_black.png'), "Todo page")
-        self.tabs.addTab(self.program_page, QtGui.QIcon(r'Resources/Images/Project_black.png'), "Projects")
-        self.tabs.addTab(self.goal_page, QtGui.QIcon(r'Resources/Images/Goal_black.png'), "Goals")
-        self.tabs.addTab(self.settings, QtGui.QIcon(r'Resources/Images/Settings_black.png'), "Settings")
+        self.tabs.addTab(self.home_page, QtGui.QIcon(ImagePaths.get_image("home")), "Home Page")
+        self.tabs.addTab(self.todo_page, QtGui.QIcon(ImagePaths.get_image("todo")), "Todo page")
+        self.tabs.addTab(self.program_page, QtGui.QIcon(ImagePaths.get_image("project")), "Projects")
+        self.tabs.addTab(self.goal_page, QtGui.QIcon(ImagePaths.get_image("goal")), "Goals")
+        self.tabs.addTab(self.settings, QtGui.QIcon(ImagePaths.get_image("settings")), "Settings")
 
         self.layout().addWidget(self.tabs)
         self.setMinimumSize(850, 450)
@@ -45,6 +45,12 @@ class TabbedWidget(QtWidgets.QWidget):
 if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
+
+    with open(r"DarkTheme.qss") as file:
+        theme = file.read()
+
+    print("Theme; ", theme)
+    app.setStyleSheet(theme)
 
     message = TabbedWidget()
     message.show()

@@ -39,7 +39,7 @@ class HomePage(QtWidgets.QWidget):
             event = ToDoWidget.ToDoWidget()
             event.set_info(*info[1:])
             event.set_event_type(info[0])
-            self.add_project_to_todo_scroll(event)
+            self.add_events_to_todo_scroll(event)
 
         for info in project_events:
             project = ToDoWidget.ToDoWidget()
