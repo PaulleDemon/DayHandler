@@ -58,7 +58,7 @@ class TodoPage(QtWidgets.QWidget):
         if window.exec():
             self._add_todo(*window.get_info())
             self.load_todo()
-
+            DBHandler.notify("home_page")
 
     def db_changed(self):
         print("Notified the change")

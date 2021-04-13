@@ -7,6 +7,9 @@ import concurrent.futures
 class Query:
     tag_table = "CREATE TABLE IF NOT EXISTS tag(tag_name VARCHAR(30) UNIQUE, tag_path VARCHAR(100) UNIQUE)"
 
+    project_table = "CREATE TABLE IF NOT EXISTS project(datetime DATETIME , tag_name VARCHAR(30), " \
+                    "tag_img_path VARCHAR(100), project_text VARCHAR(2000))"
+
     goal_table = "CREATE TABLE IF NOT EXISTS goal(datetime DATETIME , tag_name VARCHAR(30), " \
                  "tag_img_path VARCHAR(100), goal_text VARCHAR(2000))"
 
@@ -14,20 +17,27 @@ class Query:
                  "tag_img_path VARCHAR(100), todo_text VARCHAR(2000))"
 
     insert_to_tag = "INSERT INTO tag(tag_name, tag_path) VALUES(?, ?)"
+    insert_to_project = "INSERT INTO project VALUES(?, ?, ?, ?)"
     insert_to_goal = "INSERT INTO goal VALUES(?, ?, ?, ?)"
     insert_to_todo = "INSERT INTO todo VALUES(?, ?, ?, ?)"
 
     get_all_tags = "SELECT * FROM tag ORDER BY tag_name COLLATE NOCASE ASC"
+    get_all_projects = "SELECT * FROM project ORDER BY datetime ASC"
     get_all_goals = "SELECT * FROM goal ORDER BY datetime ASC"
     get_all_todo = "SELECT * FROM todo ORDER BY datetime ASC"
 
     get_tag_where = "SELECT * FROM tag WHERE tag_name = (?)"
+    get_project_where_tag = "SELECT * FROM project WHERE tag_name = (?)"
     get_goal_where_tag = "SELECT * FROM goal WHERE tag_name = (?)"
     get_todo_where_tag = "SELECT * FROM todo WHERE tag_name = (?)"
 
     delete_tag = "DELETE FROM tag WHERE tag_name = (?) AND tag_path = (?)"
+    delete_project_where_tag = "DELETE FROM project WHERE tag_name = (?)"
     delete_goal_where_tag = "DELETE FROM goal WHERE tag_name = (?)"
     delete_todo_where_tag = "DELETE FROM todo WHERE tag_name = (?)"
+
+    get_all_tables_by_date = "SELECT * FROM (SELECT 'Goal', * FROM goal UNION ALL SELECT 'Todo', * FROM todo) ORDER " \
+                             "BY datetime ASC "
 
 
 class DBHandler:
@@ -47,10 +57,9 @@ class DBHandler:
         if not os.path.isdir(cls.img_folder):
             os.mkdir(cls.img_folder)  # creates image folder
 
-        table_lst = [Query.tag_table, Query.goal_table, Query.todo_table]
+        table_lst = [Query.tag_table, Query.project_table, Query.goal_table, Query.todo_table]
 
         for table in table_lst:
-            print(table)
             cls.create_table(table)
 
         cls.check()
@@ -161,14 +170,22 @@ class DBHandler:
         # if key provided notifies only particular class
 
         if key:
+            if key == "project_page":
+                print("PROJECT KEY")
             try:
                 cls.registered_classes[key].db_changed()
+                if key == "project_page":
+                    print("PROJECT KEY 23")
 
             except NameError:
+                print("NAME  ERROR")
                 raise NotImplementedError
 
             except KeyError:
                 print("No such key")
+
+            except Exception as e:
+                print(f"EXCEPTION: {e}")
 
         else:
             for instances in cls.registered_classes.values():

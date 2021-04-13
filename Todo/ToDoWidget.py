@@ -238,9 +238,12 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info = QtWidgets.QLabel()
         self.toDo_info.setWordWrap(True)
 
-        self.widget_layout.addWidget(self.tag, 0, 1, QtCore.Qt.AlignRight)
-        self.widget_layout.addWidget(self.time_info, 0, 0)
-        self.widget_layout.addWidget(self.toDo_info, 1, 0)
+        self.event_type = QtWidgets.QLabel() # used to specify the type of event when displaying in home page
+
+        self.widget_layout.addWidget(self.event_type, 0, 0)
+        self.widget_layout.addWidget(self.time_info, 1, 0)
+        self.widget_layout.addWidget(self.tag, 1, 1, QtCore.Qt.AlignRight)
+        self.widget_layout.addWidget(self.toDo_info, 2, 0)
 
     def set_info(self, *args):
         date_time, tag_name, tag_img_path, text = args
@@ -260,6 +263,9 @@ class ToDoWidget(QtWidgets.QWidget):
 
     def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
+
+    def set_event_type(self, event):
+        self.event_type.setText(f"Event type: {event}")
 
 
 class Tag(QtWidgets.QWidget):

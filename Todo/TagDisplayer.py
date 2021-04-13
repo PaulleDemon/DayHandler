@@ -35,16 +35,19 @@ class TagDisplayer(QtWidgets.QWidget):
 
         def messageBox(self):
             nonlocal delete
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(msg.NoIcon)
 
-            message =  f"Are you sure you want to delete this tag? "
+            msg = QtWidgets.QMessageBox()
+            message = f"Are you sure you want to delete this tag? "
 
             if associate_events:
                 message = f"<div style='color:red'>{associates}</div>. " + message
 
-            delete = msg.question(self, "Confirmation", message, msg.Yes | msg.No)
+            msg.setWindowTitle("Confirmation")
+            msg.setText(message)
+            msg.setStandardButtons(msg.Yes | msg.No)
+            delete = msg.exec_()
 
+        project = DBHandler.get_data(Query.get_project_where_tag, tag)
         goal = DBHandler.get_data(Query.get_goal_where_tag, tag)
         todo = DBHandler.get_data(Query.get_todo_where_tag, tag)
 
@@ -53,6 +56,9 @@ class TagDisplayer(QtWidgets.QWidget):
 
         if todo:
             associate_events.append("todos")
+
+        if project:
+            associate_events.append("projects")
 
         associates = associate_msg.format(events=', '.join(associate_events))
         messageBox(self)

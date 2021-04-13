@@ -1,11 +1,10 @@
-
 from PyQt5 import QtWidgets, QtCore
 from Todo import ToDoWidget
 from CreateWindow import TimePicker
 from datetime import datetime
+from CustomizedWidgets import TextBox
 
-
-# todo_scroll: add character limit to textbox
+# todo: add character limit to textbox
 class AddWindow(QtWidgets.QDialog):
     """ This window creates the with calender time-picker, a tag-selector and a Text box"""
 
@@ -40,7 +39,7 @@ class AddWindow(QtWidgets.QDialog):
 
         self.tag = ToDoWidget.SelectTodo()
 
-        self.text = QtWidgets.QTextEdit()
+        self.text = TextBox.TextBox(maxChar=1500)
         self.text.setAcceptRichText(False)
 
         self.h_ok_cancel_layout = QtWidgets.QHBoxLayout()
@@ -111,4 +110,3 @@ class AddWindow(QtWidgets.QDialog):
     # todo_scroll: instead of `self.tag.get_tag()` we must pass just the text and the image path
     def get_info(self):
         return self.date, self.time, self.text.toPlainText(), *self.tag.get_tag()
-

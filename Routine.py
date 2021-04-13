@@ -26,9 +26,11 @@ class TabbedWidget(QtWidgets.QWidget):
         self.goal_page = GoalTab.GoalPage()
         self.settings = Settings.Settings()
 
-        DBHandler.register("settings", self.settings)
+        DBHandler.register("home_page", self.home_page)
+        DBHandler.register("project_page", self.program_page)
         DBHandler.register("goal_page", self.goal_page)
         DBHandler.register("todo_page", self.todo_page)
+        DBHandler.register("settings", self.settings)
 
         self.tabs.addTab(self.home_page, QtGui.QIcon(r'Resources/Images/Home_Black.png'), "Home Page")
         self.tabs.addTab(self.todo_page, QtGui.QIcon(r'Resources/Images/Todo_black.png'), "Todo page")

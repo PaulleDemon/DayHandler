@@ -1,7 +1,7 @@
 import os
 
 from DataBaseOperations import DBHandler, Query
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from CustomizedWidgets import Switch
 from Todo.TagDisplayer import TagDisplayer
 
@@ -29,10 +29,8 @@ class Settings(QtWidgets.QWidget):
     def load_tags(self):
 
         self.tag_items = DBHandler.get_data(Query.get_all_tags)
-        print("Tag items: ", self.tag_items)
         self.tags_scroll_area.delete_all()
 
-        # print("Tags from DB: ", self.tag_items)
         for tag in self.tag_items:
             new_tag = TagDisplayer(tag[0], tag[1])
             new_tag.DeleteTagSignal.connect(self.delete_tag)
@@ -40,15 +38,20 @@ class Settings(QtWidgets.QWidget):
 
     def delete_tag(self, tag_name: str, tag_img_path: str, associated_event: list):
 
-        associated_dict= {"goals": [Query.delete_goal_where_tag, "goal_page"],
-                          "todos": [Query.delete_todo_where_tag, "todo_page"]}
+        associated_dict = {"projects": [Query.delete_project_where_tag, "project_page"],
+                           "goals": [Query.delete_goal_where_tag, "goal_page"],
+                           "todos": [Query.delete_todo_where_tag, "todo_page"]}
 
         try:
 
             for event in associated_event:
+                print("Event: ", event, associated_dict[event])
                 query, notify_page = associated_dict[event]
                 DBHandler.delete_data(query, tag_name)
                 DBHandler.notify(notify_page)
+
+            if associated_event:
+                DBHandler.notify("home_page")
 
             DBHandler.delete_data(Query.delete_tag, tag_name, tag_img_path)
             os.remove(tag_img_path)
