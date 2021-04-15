@@ -12,13 +12,21 @@ class AddWindow(QtWidgets.QDialog):
     def __init__(self, create_btn_name="Create", *args, **kwargs):
         super(AddWindow, self).__init__(*args, **kwargs)
 
-        self.setWindowTitle("Create")
+        self.setWindowTitle(create_btn_name)
+        self.setObjectName("CreateWindow")
+
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
         self.setModal(True)  # Ensures that the window doesn't lose focus
 
         self.time = [12, 0, "PM"]
 
-        self.vLayout = QtWidgets.QVBoxLayout(self)
+        self.setLayout(QtWidgets.QVBoxLayout(self))
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
+        frame = QtWidgets.QFrame()
+        self.layout().addWidget(frame)
+
+        self.vLayout = QtWidgets.QVBoxLayout(frame)
 
         self.select_date_lbl = QtWidgets.QLabel("Select Date and Time")
 
@@ -42,6 +50,7 @@ class AddWindow(QtWidgets.QDialog):
 
         self.text = TextBox.TextBox(maxChar=1500)
         self.text.setAcceptRichText(False)
+        self.text.setPlaceholderText("Enter your event details here")
 
         self.h_ok_cancel_layout = QtWidgets.QHBoxLayout()
         self.create_new = QtWidgets.QPushButton(create_btn_name)
@@ -123,3 +132,5 @@ class AddWindow(QtWidgets.QDialog):
         self.time = list(map(int, time[:2]))
         self.time.append(time[2])
         self.time_btn.setText(':'.join(time[:2])+f" {time[2]}")
+
+

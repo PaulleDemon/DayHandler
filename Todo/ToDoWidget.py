@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-from datetime import datetime
 
 import ImagePaths
 import concurrent.futures
@@ -238,30 +237,33 @@ class ToDoWidget(QtWidgets.QWidget):
         self.type = event_type
         self.event_id = None
 
-
-        # self.setStyleSheet("background-color: transparent;")
-
-        self.layout = QtWidgets.QVBoxLayout()
-        self.setLayout(self.layout)
+        self.vlayout = QtWidgets.QVBoxLayout(self)
 
         self.backgroundFrame = QtWidgets.QFrame()
-        self.layout.addWidget(self.backgroundFrame)
+        self.vlayout.addWidget(self.backgroundFrame)
 
         self.widget_layout = QtWidgets.QGridLayout(self.backgroundFrame)
+        self.widget_layout.setRowStretch(5, 1)
 
         self.tag = Tag()
 
         self.time_info = QtWidgets.QLabel()
+        self.time_info.setStyleSheet("color: #dbd9da; font-size: 14px;")
         self.time_info.setMaximumHeight(50)
 
         self.toDo_info = QtWidgets.QLabel()
         self.toDo_info.setWordWrap(True)
 
         self.event_type = QtWidgets.QLabel()  # used to specify the type of event when displaying in home page
+        self.event_type.setStyleSheet("color: #aba6a7; font-size: 12px;")
 
         self.edit_btn = QtWidgets.QPushButton("🖊")
         self.delete_btn = QtWidgets.QPushButton()
         self.delete_btn.setIcon(QtGui.QIcon(ImagePaths.ImagePaths.get_image("delete")))
+
+        self.completed_btn = QtWidgets.QPushButton("Completed")
+        self.completed_btn.setObjectName("CompletedBtn")
+        self.completed_btn.clicked.connect(self.completed_event)
 
         self.edit_btn.clicked.connect(self.edit_event)
         self.delete_btn.clicked.connect(self.delete_event)
@@ -272,6 +274,7 @@ class ToDoWidget(QtWidgets.QWidget):
         self.widget_layout.addWidget(self.time_info, 2, 0)
         self.widget_layout.addWidget(self.tag, 2, 1, QtCore.Qt.AlignRight)
         self.widget_layout.addWidget(self.toDo_info, 3, 0)
+        self.widget_layout.addWidget(self.completed_btn, 4, 0, QtCore.Qt.AlignRight)
 
     def set_event_id(self, event_id):
         self.event_id = event_id
@@ -291,6 +294,8 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info.setText(text)
         self.set_tag(tag_name, tag_img_path)
         print("CHANGED: ", self.event_id, date_time, tag_name, tag_img_path, text)
+
+        self.setMaximumHeight(self.geometry().height())
 
     def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
@@ -319,7 +324,7 @@ class ToDoWidget(QtWidgets.QWidget):
 
     def edit_event(self):
         window = AddWindow.AddWindow("Update")
-
+        print("TIME: ", self.time_info.text())
         time, time_period, date = self.time_info.text().split()
         date = list(map(int, date.split('/')[::-1]))
         time = time.split(':')
@@ -347,6 +352,11 @@ class ToDoWidget(QtWidgets.QWidget):
         DBHandler.notify("home_page")
         DBHandler.notify(self.event_types[self.type][0])
 
+    def completed_event(self):
+        DBHandler.delete_data(self.event_types[self.type][1], self.event_id)
+        DBHandler.notify("home_page")
+        DBHandler.notify(self.event_types[self.type][0])
+
 
 class Tag(QtWidgets.QWidget):
     """ widget that creates the tag with a image and text
@@ -361,10 +371,10 @@ class Tag(QtWidgets.QWidget):
 
         self.setObjectName("Tag")
 
-        self.hLayout = QtWidgets.QHBoxLayout()
-        self.hLayout.setContentsMargins(0, 0, 0, 0)
+        self.frame = QtWidgets.QFrame()
 
-        self.setLayout(self.hLayout)
+        self.hLayout = QtWidgets.QHBoxLayout(self.frame)
+        self.hLayout.setContentsMargins(0, 0, 0, 0)
 
         self.tag_name = QtWidgets.QLabel()
         self.tag_image = QtWidgets.QLabel()
@@ -373,9 +383,12 @@ class Tag(QtWidgets.QWidget):
         self.hLayout.addWidget(self.tag_image)
         self.hLayout.addWidget(self.tag_name)
 
+        self.setLayout(QtWidgets.QVBoxLayout())
+        self.layout().addWidget(self.frame)
+
     def setTag(self, tag: str, imagePath: str):
         self.pixMap.load(imagePath)
-        self.pixMap = self.pixMap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
+        self.pixMap = self.pixMap.scaled(25, 25, QtCore.Qt.KeepAspectRatio)
 
         self.tag_image.setPixmap(self.pixMap)
         self.tag_name.setText(tag)
