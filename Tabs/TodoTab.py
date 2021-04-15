@@ -31,7 +31,7 @@ class TodoPage(QtWidgets.QWidget):
         self.todo_scroll.delete_all()
 
         for info in todos:
-            goal = ToDoWidget.ToDoWidget()
+            goal = ToDoWidget.ToDoWidget("Todo")
             goal.set_info(*info)
             self.add_todo_to_scroll(goal)
 

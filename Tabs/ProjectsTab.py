@@ -30,7 +30,7 @@ class ProgramPage(QtWidgets.QWidget):
         self.program.delete_all()
 
         for info in projects:
-            project = ToDoWidget.ToDoWidget()
+            project = ToDoWidget.ToDoWidget("Project")
             project.set_info(*info)
             self.add_project_to_scroll(project)
 

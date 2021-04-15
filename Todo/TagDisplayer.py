@@ -9,6 +9,8 @@ class TagDisplayer(QtWidgets.QWidget):
     def __init__(self, tag_name, img_path, *args, **kwargs):
         super(TagDisplayer, self).__init__(*args, **kwargs)
 
+        # self.setStyleSheet("background-color: red;")
+        self.setObjectName("TagDisplayer")
         self.f_layout = QtWidgets.QFormLayout(self)
         self.img_path = img_path
 
@@ -25,6 +27,7 @@ class TagDisplayer(QtWidgets.QWidget):
         self.f_layout.addRow(self.tag_name, self.tag_image)
         self.f_layout.addRow(self.deleteBtn)
 
+
     def delete_tag(self):
         delete = QtWidgets.QMessageBox.No
 
@@ -34,7 +37,7 @@ class TagDisplayer(QtWidgets.QWidget):
 
         tag = self.tag_name.text()
 
-        def messageBox(self):
+        def messageBox():
             nonlocal delete
 
             msg = QtWidgets.QMessageBox()
@@ -62,7 +65,7 @@ class TagDisplayer(QtWidgets.QWidget):
             associate_events.append("projects")
 
         associates = associate_msg.format(events=', '.join(associate_events))
-        messageBox(self)
+        messageBox()
 
         print("associated events", associate_events)
         if delete == QtWidgets.QMessageBox.Yes:

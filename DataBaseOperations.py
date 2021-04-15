@@ -7,19 +7,19 @@ import concurrent.futures
 class Query:
     tag_table = "CREATE TABLE IF NOT EXISTS tag(tag_name VARCHAR(30) UNIQUE, tag_path VARCHAR(100) UNIQUE)"
 
-    project_table = "CREATE TABLE IF NOT EXISTS project(datetime DATETIME , tag_name VARCHAR(30), " \
-                    "tag_img_path VARCHAR(100), project_text VARCHAR(2000))"
+    project_table = "CREATE TABLE IF NOT EXISTS project(id integer primary key, datetime DATETIME , " \
+                    "tag_name VARCHAR(30), tag_img_path VARCHAR(100), project_text VARCHAR(2000))"
 
-    goal_table = "CREATE TABLE IF NOT EXISTS goal(datetime DATETIME , tag_name VARCHAR(30), " \
+    goal_table = "CREATE TABLE IF NOT EXISTS goal(id integer primary key, datetime DATETIME , tag_name VARCHAR(30), " \
                  "tag_img_path VARCHAR(100), goal_text VARCHAR(2000))"
 
-    todo_table = "CREATE TABLE IF NOT EXISTS todo(datetime DATETIME , tag_name VARCHAR(30), " \
+    todo_table = "CREATE TABLE IF NOT EXISTS todo(id integer primary key, datetime DATETIME , tag_name VARCHAR(30), " \
                  "tag_img_path VARCHAR(100), todo_text VARCHAR(2000))"
 
     insert_to_tag = "INSERT INTO tag(tag_name, tag_path) VALUES(?, ?)"
-    insert_to_project = "INSERT INTO project VALUES(?, ?, ?, ?)"
-    insert_to_goal = "INSERT INTO goal VALUES(?, ?, ?, ?)"
-    insert_to_todo = "INSERT INTO todo VALUES(?, ?, ?, ?)"
+    insert_to_project = "INSERT INTO project(datetime, tag_name, tag_img_path, project_text) VALUES(?, ?, ?, ?)"
+    insert_to_goal = "INSERT INTO goal(datetime, tag_name, tag_img_path, goal_text) VALUES(?, ?, ?, ?)"
+    insert_to_todo = "INSERT INTO todo(datetime, tag_name, tag_img_path, todo_text) VALUES(?, ?, ?, ?)"
 
     get_all_tags = "SELECT * FROM tag ORDER BY tag_name COLLATE NOCASE ASC"
     get_all_projects = "SELECT * FROM project ORDER BY datetime ASC"
@@ -35,6 +35,17 @@ class Query:
     delete_project_where_tag = "DELETE FROM project WHERE tag_name = (?)"
     delete_goal_where_tag = "DELETE FROM goal WHERE tag_name = (?)"
     delete_todo_where_tag = "DELETE FROM todo WHERE tag_name = (?)"
+
+    delete_project_where_id = "DELETE FROM project WHERE id = (?)"
+    delete_goal_where_id = "DELETE FROM goal WHERE id = (?)"
+    delete_todo_where_id = "DELETE FROM todo WHERE id = (?)"
+
+    update_project_where_id = "UPDATE project SET datetime=(?), tag_name=(?), tag_img_path=(?)," \
+                              " project_text=(?) WHERE id=(?)"
+    update_goal_where_id = "UPDATE goal SET datetime=(?), tag_name=(?), tag_img_path=(?)," \
+                           " goal_text=(?) WHERE id=(?)"
+    update_todo_where_id = "UPDATE todo SET datetime=(?), tag_name=(?), tag_img_path=(?)," \
+                           " todo_text=(?) WHERE id=(?)"
 
     get_all_tables_by_date = "SELECT * FROM (SELECT 'Goal', * FROM goal UNION ALL SELECT 'Todo', * FROM todo) ORDER " \
                              "BY datetime ASC "
@@ -144,10 +155,19 @@ class DBHandler:
 
     @classmethod
     def delete_data(cls, query, *where_value):
-        print("QUERY: ", query, where_value)
         thread = threading.Thread(target=cls._delete_data_from_db, args=(query, where_value))
         thread.start()
         thread.join()
+
+    @classmethod
+    def _update_date_from_db(cls, query, *args):  # updates value in database
+        with sqlite3.connect(cls._sql_file) as conn:
+            conn.execute(query, *args)
+
+    @classmethod
+    def update_data(cls, query, *args):
+        thread = threading.Thread(target=cls._update_date_from_db, args=(query, args))
+        thread.start()
 
     @classmethod
     def get_notify_classes(cls):  # returns dict of all the classes registered

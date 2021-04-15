@@ -36,7 +36,7 @@ class GoalPage(QtWidgets.QWidget):
         self.goals.delete_all()
 
         for info in goals:
-            goal = ToDoWidget.ToDoWidget()
+            goal = ToDoWidget.ToDoWidget("Goal")
             goal.set_info(*info)
             self.add_goal_to_scroll(goal)
 

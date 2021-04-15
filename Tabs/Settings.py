@@ -14,6 +14,8 @@ class Settings(QtWidgets.QWidget):
 
         self.sql_file = r"UserResources/userTodo.db"
 
+        self.setObjectName("Settings")
+
         self.grid = QtWidgets.QGridLayout(self)
         self.switch_btn = Switch.Switch()
         self.tags_scroll_area = AvailableTagScrollArea()

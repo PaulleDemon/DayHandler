@@ -1,9 +1,11 @@
 import os
 import re
 import shutil
+from datetime import datetime
 
 import ImagePaths
 import concurrent.futures
+from CreateWindow import AddWindow
 from DataBaseOperations import DBHandler, Query
 
 from datetime import datetime
@@ -11,7 +13,6 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 
 class SelectTodo(QtWidgets.QWidget):
-
     """ This create the combobox with existing tags and a button to create new tags"""
 
     def __init__(self, *args, **kwargs):
@@ -46,6 +47,11 @@ class SelectTodo(QtWidgets.QWidget):
         self.tag_items = DBHandler.get_data(Query.get_all_tags)
         for item in self.tag_items:
             self.add_item(item[0], item[1])
+
+    def set_current_tag(self, tag_name: str):
+        index = self.combo_box.findData(tag_name)
+        if index > -1:
+            self.combo_box.setCurrentIndex(index)
 
     def get_file_names(self):  # Returns the sql file name and tag image directory
         return self.sql_file, self.tag_image_dir
@@ -216,11 +222,24 @@ class NewTag(QtWidgets.QDialog):
 
 
 # todo: scroll the display of the event is not good looking there is lot of space between date and todo_scroll info
+# todo: display time in words
+# todo: add completed button
 class ToDoWidget(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
+    event_types = {"Goal": ["goal_page", Query.delete_goal_where_id, Query.update_goal_where_id],
+                   "Project": ["project_page", Query.delete_project_where_id, Query.update_project_where_id],
+                   "Todo": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, event_type: str, *args, **kwargs):
         super(ToDoWidget, self).__init__(*args, **kwargs)
+
+        self.setObjectName("EventDisplayer")
+
+        self.type = event_type
+        self.event_id = None
+
+
+        # self.setStyleSheet("background-color: transparent;")
 
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
@@ -238,14 +257,14 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info = QtWidgets.QLabel()
         self.toDo_info.setWordWrap(True)
 
-        self.event_type = QtWidgets.QLabel() # used to specify the type of event when displaying in home page
+        self.event_type = QtWidgets.QLabel()  # used to specify the type of event when displaying in home page
 
         self.edit_btn = QtWidgets.QPushButton("🖊")
         self.delete_btn = QtWidgets.QPushButton()
         self.delete_btn.setIcon(QtGui.QIcon(ImagePaths.ImagePaths.get_image("delete")))
 
-        # self.edit_btn.clicked.connect(self.edit)
-        # self.delete_event.clicked.connect(self.edit)
+        self.edit_btn.clicked.connect(self.edit_event)
+        self.delete_btn.clicked.connect(self.delete_event)
         self.widget_layout.addWidget(self.delete_btn, 0, 0)
         self.widget_layout.addWidget(self.edit_btn, 0, 1)
 
@@ -254,8 +273,11 @@ class ToDoWidget(QtWidgets.QWidget):
         self.widget_layout.addWidget(self.tag, 2, 1, QtCore.Qt.AlignRight)
         self.widget_layout.addWidget(self.toDo_info, 3, 0)
 
+    def set_event_id(self, event_id):
+        self.event_id = event_id
+
     def set_info(self, *args):
-        date_time, tag_name, tag_img_path, text = args
+        self.event_id, date_time, tag_name, tag_img_path, text = args
 
         def change_format(_date_time):
             _date, _time = _date_time.split()
@@ -264,19 +286,66 @@ class ToDoWidget(QtWidgets.QWidget):
             return date_yy_mm_dd.strftime("%d/%m/%Y"), time_24hrs.strftime("%I:%M %p")
 
         date, time = change_format(date_time)
-        print(f"date: {date}, time: {time}")
 
         self.time_info.setText(f"{time} {date}")
         self.toDo_info.setText(text)
         self.set_tag(tag_name, tag_img_path)
+        print("CHANGED: ", self.event_id, date_time, tag_name, tag_img_path, text)
 
     def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
 
-    def set_event_type(self, event):
-        self.event_type.setText(f"Event type: {event}")
+    def set_event_type(self):
+        self.event_type.setText(f"Event type: {self.type}")
 
-    # def edit(self):
+    def delete_event(self):
+        delete = QtWidgets.QMessageBox.No
+
+        def messageBox():
+            nonlocal delete
+            msg = QtWidgets.QMessageBox()
+
+            msg.setWindowTitle("Confirmation")
+            msg.setText("Are you sure you want to delete this event? ")
+            msg.setStandardButtons(msg.Yes | msg.No)
+            delete = msg.exec_()
+
+        messageBox()
+        if delete == QtWidgets.QMessageBox.Yes:
+            query = self.event_types[self.type][1]
+            DBHandler.delete_data(query, self.event_id)
+            self.deleteLater()
+            self.notify()
+
+    def edit_event(self):
+        window = AddWindow.AddWindow("Update")
+
+        time, time_period, date = self.time_info.text().split()
+        date = list(map(int, date.split('/')[::-1]))
+        time = time.split(':')
+        time.append(time_period)
+
+        window.preset(*(date, time, self.tag.getTag(), self.toDo_info.text()))
+
+        if window.exec():
+            query = self.event_types[self.type][2]
+            select_date, select_time, goal_text, select_tag_name, select_tag_img_path = window.get_info()
+
+            def convert_to_24hrs(time):
+                time_24hrs = datetime.strptime(' '.join(map(str, time)), '%I %M %p').time()
+                return time_24hrs
+
+            date = select_date.toString("yyyy-MM-dd")
+            time_24hrs = convert_to_24hrs(select_time)
+
+            date_time = f"{date} {time_24hrs}"
+            DBHandler.update_data(query, *(date_time, select_tag_name, select_tag_img_path, goal_text), self.event_id)
+            self.set_info(*(self.event_id, date_time, select_tag_name, select_tag_img_path, goal_text))
+            self.notify()
+
+    def notify(self):
+        DBHandler.notify("home_page")
+        DBHandler.notify(self.event_types[self.type][0])
 
 
 class Tag(QtWidgets.QWidget):
@@ -289,6 +358,8 @@ class Tag(QtWidgets.QWidget):
 
     def __init__(self, *args, **kwargs):
         super(Tag, self).__init__(*args, **kwargs)
+
+        self.setObjectName("Tag")
 
         self.hLayout = QtWidgets.QHBoxLayout()
         self.hLayout.setContentsMargins(0, 0, 0, 0)
@@ -308,3 +379,6 @@ class Tag(QtWidgets.QWidget):
 
         self.tag_image.setPixmap(self.pixMap)
         self.tag_name.setText(tag)
+
+    def getTag(self):
+        return self.tag_name.text()

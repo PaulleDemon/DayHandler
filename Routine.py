@@ -1,22 +1,23 @@
 import sys
 
 from ImagePaths import ImagePaths
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from DataBaseOperations import DBHandler
 from CustomizedWidgets import HorizontalTabs
 from Tabs import HomeTab, TodoTab, ProjectsTab, GoalTab, Settings
 
 
 class TabbedWidget(QtWidgets.QWidget):
+    shown = False
 
     def __init__(self, *args, **kwargs):
         super(TabbedWidget, self).__init__(*args, **kwargs)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0 , 0)
-
+        ImagePaths.set_theme(1)
         self.tabs = HorizontalTabs.TabWidget()
-        # self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
+        self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
 
         DBHandler.initialize_files()
 
@@ -50,9 +51,9 @@ if __name__ == '__main__':
         theme = file.read()
 
     print("Theme; ", theme)
-    app.setStyleSheet(theme)
 
     message = TabbedWidget()
     message.show()
+    app.setStyleSheet(theme)
 
     sys.exit(app.exec())

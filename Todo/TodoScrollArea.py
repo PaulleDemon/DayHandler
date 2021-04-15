@@ -7,6 +7,9 @@ class TodoScrollArea(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TodoScrollArea, self).__init__(*args, **kwargs)
 
+        self.setObjectName("TodoScroll")
+        # self.setStyleSheet("background-color: red;")
+
         self.vlayout = QtWidgets.QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.vlayout)
@@ -28,7 +31,7 @@ class TodoScrollArea(QtWidgets.QWidget):
         todo = ToDoWidget.ToDoWidget()
         todo.set_info()
         todo.set_tag(tag_name, tag_icon)
-        todo.setStyleSheet('background: blue')
+        # todo.setStyleSheet('background: blue')
 
         self.add_event(todo)
 

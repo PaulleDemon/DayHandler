@@ -36,13 +36,13 @@ class HomePage(QtWidgets.QWidget):
         self.programScrollArea.delete_all()
 
         for info in events:
-            event = ToDoWidget.ToDoWidget()
+            event = ToDoWidget.ToDoWidget(info[0])
             event.set_info(*info[1:])
-            event.set_event_type(info[0])
+            event.set_event_type()
             self.add_events_to_todo_scroll(event)
 
         for info in project_events:
-            project = ToDoWidget.ToDoWidget()
+            project = ToDoWidget.ToDoWidget("Project")
             project.set_info(*info)
             self.add_project_to_todo_scroll(project)
 
