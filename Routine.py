@@ -15,7 +15,7 @@ class TabbedWidget(QtWidgets.QWidget):
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0 , 0)
-        ImagePaths.set_theme(0)
+
         self.tabs = HorizontalTabs.TabWidget()
         self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
 
@@ -47,11 +47,11 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
     # app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
-    with open(r"DarkTheme.qss") as file:
+    with open(r"LightTheme.qss") as file:
         theme = file.read()
 
     print("Theme; ", theme)
-
+    ImagePaths.set_theme(1)
     message = TabbedWidget()
     message.show()
     app.setStyleSheet(theme)

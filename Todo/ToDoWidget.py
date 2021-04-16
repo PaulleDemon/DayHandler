@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 
+import Utils
 import ImagePaths
 import concurrent.futures
 from CreateWindow import AddWindow
@@ -98,6 +99,7 @@ class SelectTodo(QtWidgets.QWidget):
             return None
 
 
+# todo: this should call DBHandler
 class NewTag(QtWidgets.QDialog):
     # creates a new tag window where the user will be asked to enter a tag name and an image
 
@@ -240,10 +242,16 @@ class ToDoWidget(QtWidgets.QWidget):
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
         self.backgroundFrame = QtWidgets.QFrame()
+        # self.backgroundFrame.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+
+        # self.backgroundFrame.setStyleSheet("QFrame{background-color: blue;} QLabel{background-color: green;}"
+        #                                    "QPushButton{background-color: red;}")
+
         self.vlayout.addWidget(self.backgroundFrame)
 
         self.widget_layout = QtWidgets.QGridLayout(self.backgroundFrame)
-        self.widget_layout.setRowStretch(5, 1)
+        # self.widget_layout.setSizeConstraint(self.widget_layout.SetMinimumSize)
+        # self.widget_layout.setRowStretch(5, 1)
 
         self.tag = Tag()
 
@@ -255,7 +263,8 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info.setWordWrap(True)
 
         self.event_type = QtWidgets.QLabel()  # used to specify the type of event when displaying in home page
-        self.event_type.setStyleSheet("color: #aba6a7; font-size: 12px;")
+        self.event_type.setStyleSheet("color: #dee0e0; font-size: 12px;")
+        self.event_type.setMaximumHeight(20)
 
         self.edit_btn = QtWidgets.QPushButton("🖊")
         self.delete_btn = QtWidgets.QPushButton()
@@ -267,14 +276,15 @@ class ToDoWidget(QtWidgets.QWidget):
 
         self.edit_btn.clicked.connect(self.edit_event)
         self.delete_btn.clicked.connect(self.delete_event)
+
         self.widget_layout.addWidget(self.delete_btn, 0, 0)
         self.widget_layout.addWidget(self.edit_btn, 0, 1)
 
         self.widget_layout.addWidget(self.event_type, 1, 0)
         self.widget_layout.addWidget(self.time_info, 2, 0)
         self.widget_layout.addWidget(self.tag, 2, 1, QtCore.Qt.AlignRight)
-        self.widget_layout.addWidget(self.toDo_info, 3, 0)
-        self.widget_layout.addWidget(self.completed_btn, 4, 0, QtCore.Qt.AlignRight)
+        self.widget_layout.addWidget(self.toDo_info, 3, 0, 1, 2)
+        self.widget_layout.addWidget(self.completed_btn, 4, 0, 1, 2, QtCore.Qt.AlignCenter)
 
     def set_event_id(self, event_id):
         self.event_id = event_id
@@ -282,20 +292,23 @@ class ToDoWidget(QtWidgets.QWidget):
     def set_info(self, *args):
         self.event_id, date_time, tag_name, tag_img_path, text = args
 
-        def change_format(_date_time):
-            _date, _time = _date_time.split()
-            time_24hrs = datetime.strptime(_time, "%H:%M:%S")
-            date_yy_mm_dd = datetime.strptime(_date, "%Y-%m-%d")
-            return date_yy_mm_dd.strftime("%d/%m/%Y"), time_24hrs.strftime("%I:%M %p")
+        # def change_format(_date_time):
+        #     _date, _time = _date_time.split()
+        #     time_24hrs = datetime.strptime(_time, "%H:%M:%S")
+        #     date_yy_mm_dd = datetime.strptime(_date, "%Y-%m-%d")
+        #     return date_yy_mm_dd.strftime("%A, %b, %Y"), time_24hrs.strftime("%I:%M %p")
+        #
+        # date, time = change_format(date_time)
 
-        date, time = change_format(date_time)
+        date, time = date_time.split()
 
-        self.time_info.setText(f"{time} {date}")
+        date, time = Utils.convertDateToName(date), Utils.convert24hrsTo12hrs(time)
+
+        self.time_info.setText(f"{time} | {date}")
         self.toDo_info.setText(text)
         self.set_tag(tag_name, tag_img_path)
-        print("CHANGED: ", self.event_id, date_time, tag_name, tag_img_path, text)
 
-        self.setMaximumHeight(self.geometry().height())
+        self.setMaximumHeight(self.sizeHint().height()+self.toDo_info.sizeHint().height())
 
     def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
@@ -322,11 +335,14 @@ class ToDoWidget(QtWidgets.QWidget):
             self.deleteLater()
             self.notify()
 
+    # todo: problem with conversion
     def edit_event(self):
         window = AddWindow.AddWindow("Update")
         print("TIME: ", self.time_info.text())
         time, time_period, date = self.time_info.text().split()
+        print("DATE: ", datetime.strptime("%A, %b, %Y").strftime("%Y/%m/%d"))
         date = list(map(int, date.split('/')[::-1]))
+        print("DATE: ", date)
         time = time.split(':')
         time.append(time_period)
 

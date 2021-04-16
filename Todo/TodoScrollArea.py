@@ -16,6 +16,7 @@ class TodoScrollArea(QtWidgets.QWidget):
 
         self.scroll_widget = QtWidgets.QWidget()
         self.scroll_layout = QtWidgets.QVBoxLayout()
+        # self.scroll_layout.setSizeConstraint(self.scroll_layout.SetMaximumSize)
         self.scroll_widget.setLayout(self.scroll_layout)
 
         self.scroll_area = QtWidgets.QScrollArea()
