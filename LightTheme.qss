@@ -360,14 +360,14 @@ QCalendarWidget QAbstractItemView:disabled {
  }
 
 QComboBox {
-  color: #ffffff;
+  color: #000000;
   font-size: 16px;
   border: 1px solid #455364;
   border-radius: 2px;
   padding-left: 4px;
   padding-right: 4px;
   min-height: 1.5em;
-  background-color: #57178f;
+  background-color: #e0e0e0;
 
 }
 
@@ -376,7 +376,7 @@ QComboBox QAbstractItemView {
   /*font-size: 18px;*/
   border: 1px solid #455364;
   border-radius: 0;
-  background-color: #57178f;
+  background-color: #e0e0e0;
   selection-background-color: rgba(110, 110, 110, 150);
   outline: 0px;
 }
@@ -413,27 +413,11 @@ QComboBox:on {
   selection-background-color: #346792;
 }
 
-QComboBox::indicator {
-  border: none;
-  border-radius: 0;
-  background-color: transparent;
-  selection-background-color: transparent;
-  color: transparent;
-  selection-color: transparent;
-  /* Needed to remove indicator - fix #132 */
-}
 
 QComboBox::indicator:alternate {
   background: #19232D;
 }
 
-QComboBox::item:alternate {
-  background: #19232D;
-}
-
-QComboBox::item:checked {
-  font-weight: bold;
-}
 
 QComboBox::item:selected {
   border: 0px solid transparent;
