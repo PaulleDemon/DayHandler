@@ -39,7 +39,7 @@ class TextBox(QtWidgets.QTextEdit):
             self.setText(self.toPlainText()[:self.maxChar])
 
         if self.charCount < self.maxChar // 3:
-            self.label.setStyleSheet("color: #00d107")
+            self.label.setStyleSheet("color: #03ab2a")
             # self.label_palette.setColor(self.label_palette.WindowText,  QtGui.QColor(QtCore.Qt.darkGreen))
             # self.label.setPalette(self.label_palette)
 

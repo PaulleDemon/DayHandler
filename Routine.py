@@ -50,7 +50,6 @@ if __name__ == '__main__':
     with open(r"LightTheme.qss") as file:
         theme = file.read()
 
-    print("Theme; ", theme)
     ImagePaths.set_theme(1)
     message = TabbedWidget()
     message.show()

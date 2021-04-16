@@ -257,28 +257,29 @@ QMessageBox QPushButton{
     background-color: transparent;
 }
 
-/*#CreateWindow QWidget{
-
-}*/
 
 #CreateWindow QFrame{
     border-radius: 0px;
-    background-color: #2b2b2b;
+    background-color: #ededed;
 }
 
 #CreateWindow QLabel{
-    color: #ffffff;
+    color: #000000;
     background-color: transparent;
 }
 
 #CreateWindow QPushButton{
     color: #ffffff;
-    background-color: #57178f;
+    background-color: #388cd6;
+}
+
+#CreateWindow QPushButton:hover{
+    background-color: #377ebd;
 }
 
 #CreateWindow QTextEdit{
-    color: #ffffff;
-    background-color: #3b3d3d;
+    color: #000000;
+    background-color: #c2c2c2;
     font-size: 18px;
     border-radius: 5px;
     border: 1px solid #37506b;
@@ -288,23 +289,40 @@ QMessageBox QPushButton{
     border: 1px solid #094e94;
 }
 
-/* navigation bar */
-QCalendarWidget QWidget { background-color: red; }
+
+/* header row */
+QCalendarWidget QWidget {
+    color: red;
+    background-color: #f0eded;
+    border:1px solid #8c8c8c;
+    padding: 3px;
+}
+
 
 QCalendarWidget QToolButton {
     font-size: 12px;
-    color: white;
-    background-color: red;
+    color: red;
+    background-color: blue;
+}
+
+QCalendarWidget QTableView
+{   color: yellow;
+    background-color: green;
+    alternate-background-color: #d4d5d6;  /* day name/week number background */
 }
 
 QCalendarWidget QMenu {
     color: white;
     font-size: 14px;
-    background-color: rgb(100, 100, 100);
+    background-color: #e6e6e6;
 }
 
-QCalendarWidget QMenu:disabled {
+QCalendarWidget QMenu::item:disabled {
     color: #9c9595;
+}
+QCalendarWidget QMenu::item:enabled {
+    color: #000000;
+    selection-background-color: #969595;
 }
 
 QCalendarWidget QMenu:hover {
@@ -321,26 +339,25 @@ QCalendarWidget QSpinBox {
     selection-color: rgb(255, 255, 255);
 }
 
-QCalendarWidget QSpinBox::up-button { background-color: blue; border: 1px solid white; height: 12px;}
-QCalendarWidget QSpinBox::down-button {background-color: blue; border: 1px solid white; height: 12px;}
+/*QCalendarWidget QSpinBox::up-button { background-color: blue; border: 1px solid white; height: 12px;}
+QCalendarWidget QSpinBox::down-button {background-color: blue; border: 1px solid white; height: 12px;}*/
 /*QCalendarWidget QSpinBox::up-arrow { width:56px;  height:56px; }
 QCalendarWidget QSpinBox::down-arrow { width:56px;  height:56px; }*/
-
-/* header row */
-QCalendarWidget QWidget { alternate-background-color: rgb(128, 128, 128); }
 
 /* normal days */
 QCalendarWidget QAbstractItemView:enabled
 {
     font-size:24px;
-    color: rgb(180, 180, 180);
-    background-color: black;
-    selection-background-color: rgb(64, 64, 64);
-    selection-color: rgb(0, 255, 0);
+    color: green;
+    background-color: blue;
+    selection-background-color: #c7c3c3;
+    selection-color: #000000;
 }
 
 /* days in other months */
-QCalendarWidget QAbstractItemView:disabled { color: rgb(64, 64, 64); }
+QCalendarWidget QAbstractItemView:disabled {
+ color: #969393;
+ }
 
 QComboBox {
   color: #ffffff;
@@ -355,7 +372,7 @@ QComboBox {
 }
 
 QComboBox QAbstractItemView {
-  color: #ffffff;
+  color: #000000;
   /*font-size: 18px;*/
   border: 1px solid #455364;
   border-radius: 0;
@@ -364,8 +381,9 @@ QComboBox QAbstractItemView {
   outline: 0px;
 }
 
+
 QComboBox QAbstractItemView:hover {
-  background-color: #19232D;
+  background-color: red;
   color: #E0E1E3;
 }
 
@@ -436,4 +454,27 @@ QComboBox::down-arrow {
 
 QComboBox::down-arrow:on, QComboBox::down-arrow:hover, QComboBox::down-arrow:focus {
   image: url(":/qss_icons/dark/rc/arrow_down.png");
+}
+
+/*This changes the buttons next month button style*/
+#qt_calendar_nextmonth{
+    qproperty-icon: url("Resources/Images/DarkThemeImages/right_arrow_black.png");
+}
+
+#qt_calendar_nextmonth::hover{
+    background-color: #858383;
+}
+
+#qt_calendar_prevmonth{
+
+    qproperty-icon: url(Resources/Images/DarkThemeImages/Leftarrow_black.png);
+}
+
+#qt_calendar_prevmonth::hover{
+    background-color: #858383;
+}
+
+#qt_calendar_selectionstartrange{
+
+    background-color: red;
 }

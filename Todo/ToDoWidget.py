@@ -244,14 +244,9 @@ class ToDoWidget(QtWidgets.QWidget):
         self.backgroundFrame = QtWidgets.QFrame()
         # self.backgroundFrame.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
 
-        # self.backgroundFrame.setStyleSheet("QFrame{background-color: blue;} QLabel{background-color: green;}"
-        #                                    "QPushButton{background-color: red;}")
-
         self.vlayout.addWidget(self.backgroundFrame)
 
         self.widget_layout = QtWidgets.QGridLayout(self.backgroundFrame)
-        # self.widget_layout.setSizeConstraint(self.widget_layout.SetMinimumSize)
-        # self.widget_layout.setRowStretch(5, 1)
 
         self.tag = Tag()
 
@@ -292,14 +287,6 @@ class ToDoWidget(QtWidgets.QWidget):
     def set_info(self, *args):
         self.event_id, date_time, tag_name, tag_img_path, text = args
 
-        # def change_format(_date_time):
-        #     _date, _time = _date_time.split()
-        #     time_24hrs = datetime.strptime(_time, "%H:%M:%S")
-        #     date_yy_mm_dd = datetime.strptime(_date, "%Y-%m-%d")
-        #     return date_yy_mm_dd.strftime("%A, %b, %Y"), time_24hrs.strftime("%I:%M %p")
-        #
-        # date, time = change_format(date_time)
-
         date, time = date_time.split()
 
         date, time = Utils.convertDateToName(date), Utils.convert24hrsTo12hrs(time)
@@ -308,7 +295,7 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info.setText(text)
         self.set_tag(tag_name, tag_img_path)
 
-        self.setMaximumHeight(self.sizeHint().height()+self.toDo_info.sizeHint().height())
+        self.setMaximumHeight(self.sizeHint().height()+self.toDo_info.sizeHint().height()+30)
 
     def set_tag(self, tag, imgPath):
         self.tag.setTag(tag, imgPath)
@@ -335,17 +322,15 @@ class ToDoWidget(QtWidgets.QWidget):
             self.deleteLater()
             self.notify()
 
-    # todo: problem with conversion
     def edit_event(self):
         window = AddWindow.AddWindow("Update")
-        print("TIME: ", self.time_info.text())
-        time, time_period, date = self.time_info.text().split()
-        print("DATE: ", datetime.strptime("%A, %b, %Y").strftime("%Y/%m/%d"))
-        date = list(map(int, date.split('/')[::-1]))
-        print("DATE: ", date)
-        time = time.split(':')
-        time.append(time_period)
+        time, date = self.time_info.text().split("|")
+        date= Utils.convertDayNameToDate(date.strip())
 
+        date = list(map(int, date.split("/")))
+        time, period = time.split()
+        time = time.split(":")
+        time.append(period)
         window.preset(*(date, time, self.tag.getTag(), self.toDo_info.text()))
 
         if window.exec():
@@ -390,7 +375,7 @@ class Tag(QtWidgets.QWidget):
         self.frame = QtWidgets.QFrame()
 
         self.hLayout = QtWidgets.QHBoxLayout(self.frame)
-        self.hLayout.setContentsMargins(0, 0, 0, 0)
+        self.hLayout.setContentsMargins(1, 1, 1, 1)
 
         self.tag_name = QtWidgets.QLabel()
         self.tag_image = QtWidgets.QLabel()
