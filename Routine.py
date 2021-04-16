@@ -43,16 +43,16 @@ class TabbedWidget(QtWidgets.QWidget):
         self.setMinimumSize(850, 450)
 
 
-if __name__ == '__main__':
-
-    app = QtWidgets.QApplication(sys.argv)
-    # app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
-    with open(r"LightTheme.qss") as file:
-        theme = file.read()
-
-    ImagePaths.set_theme(1)
-    message = TabbedWidget()
-    message.show()
-    app.setStyleSheet(theme)
-
-    sys.exit(app.exec())
+# if __name__ == '__main__':
+#
+#     app = QtWidgets.QApplication(sys.argv)
+#     # app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
+#     with open(r"Resources/LightTheme.qss") as file:
+#         theme = file.read()
+#
+#     ImagePaths.set_theme(1)
+#     message = TabbedWidget()
+#     message.show()
+#     app.setStyleSheet(theme)
+#
+#     sys.exit(app.exec())

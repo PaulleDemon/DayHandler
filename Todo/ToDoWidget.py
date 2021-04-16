@@ -118,12 +118,15 @@ class NewTag(QtWidgets.QDialog):
 
         self.messege_lbl = QtWidgets.QLabel('')
         self.messege_lbl.setStyleSheet("QLabel{color: red;}")
+        self.messege_lbl.setMaximumHeight(10)
+        self.messege_lbl.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
 
         self.img_lbl = QtWidgets.QLabel()
         self.img = QtGui.QPixmap()
+        self.img_lbl.setMaximumHeight(100)
+        self.img_lbl.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
 
         self.tag_name = QtWidgets.QLineEdit()
-        # self.tag_name.property("mandatoryfield")
         self.tag_name.setStyleSheet("QLineEdit[mandatoryfield=True]{border: 1px solid red;}")
 
         self.tag_name.setMaxLength(25)
@@ -158,6 +161,7 @@ class NewTag(QtWidgets.QDialog):
         self.v_layout.addLayout(self.g_layout)
         self.v_layout.addLayout(self.img_h_layout)
         self.v_layout.addLayout(self.ok_cancel_layout)
+        # self.v_layout.addStretch(1)
 
         self.filePath = ""
 
@@ -179,8 +183,6 @@ class NewTag(QtWidgets.QDialog):
         self.tag_name.style().unpolish(self.tag_name)
         self.tag_name.style().polish(self.tag_name)
 
-        self.tag_image.style().unpolish(self.tag_image)
-        self.tag_image.style().polish(self.tag_image)
         self.update()
 
         text = self.tag_name.text()

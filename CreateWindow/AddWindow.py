@@ -111,8 +111,8 @@ class AddWindow(QtWidgets.QDialog):
             error_msg_window("Error", "Please select a tag")
             return
 
-        if len(self.text.toPlainText()) < 11:
-            error_msg_window("Error", "Please Enter at least 11 characters in the text box")
+        if len(self.text.toPlainText()) < 5:
+            error_msg_window("Error", "Please Enter at least 5 characters in the text box")
             return
 
         self.accept()

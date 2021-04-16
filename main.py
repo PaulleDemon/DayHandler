@@ -1,15 +1,33 @@
+import sys
+import Routine
+
 from PyQt5 import QtWidgets
+from ImagePaths import ImagePaths
 
 
-class MainWindow(QtWidgets.QMainWindow):
+def load_theme(theme: int):
+    global app
+    with open(r"Resources/LightTheme.qss") as file:
+        theme = file.read()
 
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+    ImagePaths.set_theme(1)
+    app.setStyleSheet(theme)
 
-        self.setCentralWidget()
+
+def main():
+    global app
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    win = Routine.TabbedWidget()
+    win.show()
+
+    load_theme(0)
+
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':
-    pass
+    main()
 
 

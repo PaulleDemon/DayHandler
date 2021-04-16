@@ -27,7 +27,7 @@ class Switch(QtWidgets.QPushButton):
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.translate(center)
-        painter.setBrush(QtGui.QColor(0,0,0))
+        painter.setBrush(QtGui.QColor("#3c6aab"))
 
         pen = QtGui.QPen(QtCore.Qt.black)
         pen.setWidth(2)

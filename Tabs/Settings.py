@@ -1,12 +1,11 @@
 import os
 
 from DataBaseOperations import DBHandler, Query
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from CustomizedWidgets import Switch
 from Todo.TagDisplayer import TagDisplayer
 
 
-# todo: please check before deleting tags if there are events associated with that tag
 class Settings(QtWidgets.QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -17,13 +16,20 @@ class Settings(QtWidgets.QWidget):
         self.setObjectName("Settings")
 
         self.grid = QtWidgets.QGridLayout(self)
+
         self.switch_btn = Switch.Switch()
+        self.switch_btn.clicked.connect(self.change_theme)
+
         self.tags_scroll_area = AvailableTagScrollArea()
 
-        self.grid.addWidget(QtWidgets.QLabel("Theme"), 0, 0)
-        self.grid.addWidget(self.switch_btn, 0, 1)
+        # self.setStyleSheet("QLabel{background-color: red;}")
 
-        self.grid.addWidget(self.tags_scroll_area, 1, 0)
+        self.grid.addWidget(QtWidgets.QLabel("Theme: "), 0, 0, QtCore.Qt.AlignLeft)
+        self.grid.addWidget(self.switch_btn, 0, 1, QtCore.Qt.AlignLeft)
+
+        self.grid.addWidget(QtWidgets.QLabel("Tags: "), 1, 0, QtCore.Qt.AlignLeft)
+        self.grid.addWidget(self.tags_scroll_area, 2, 0, 1, 2)
+
 
         self.tag_items = None
         self.load_tags()
@@ -67,6 +73,9 @@ class Settings(QtWidgets.QWidget):
     def db_changed(self):
         print("Notified the change")
         self.load_tags()
+
+    def change_theme(self):
+        pass
 
 
 class AvailableTagScrollArea(QtWidgets.QWidget):
