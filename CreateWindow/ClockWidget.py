@@ -46,15 +46,17 @@ class ClockWidget(QtWidgets.QWidget):
 
         rect = QtCore.QRectF(0, 0, self.r+20, self.r+20)
 
+        pointer_color = "#c40202"
+
         if 0 <= self.current_index < len(self.L)+1:
             c = self.center_by_index(self.current_index)
             rect.moveCenter(c)
-            pen = QtGui.QPen(QtGui.QColor("red"))
+            pen = QtGui.QPen(QtGui.QColor(pointer_color))
             pen.setWidth(5)
             painter.setPen(pen)
             painter.drawLine(c, self.rect().center())
 
-            painter.setBrush(QtGui.QColor("red"))
+            painter.setBrush(QtGui.QColor(pointer_color))
             painter.drawEllipse(rect.adjusted(5, 5, -5, -5))
 
         painter.setPen(QtGui.QColor("white"))

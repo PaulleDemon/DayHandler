@@ -1,4 +1,9 @@
-class ImagePaths:
+
+class ThemeController:
+
+    """ This class controls the theme. Any theme change is to be handled by this class.
+    It also notifies theme change to registered classes"""
+
     main_app = None  # must register main QApplication class
     icon_classes = set()  # register classes which has icon associated with it
 
@@ -25,12 +30,12 @@ class ImagePaths:
     theme_paths = {0: r"Resources/DarkTheme.qss", 1: r"Resources/LightTheme.qss"}
 
     @classmethod
-    def __repr__(cls):
-        return f"ImagePaths({cls.dark_theme_images}; {cls.light_theme_images})"
+    def get_theme_info(cls):
+        return f"ThemeController({cls.dark_theme_images}; {cls.light_theme_images})"
 
     @classmethod
-    def __str__(cls):
-        return f"{cls.dark_theme_images.keys()}"
+    def get_theme_keys(cls):
+        return f"{list(cls.dark_theme_images.keys())}"
 
     @classmethod
     def get_image(cls, key: str) -> str:
@@ -53,19 +58,19 @@ class ImagePaths:
             raise Exception(f"Invalid theme {theme}. Only 0/1 is accepted")
 
     @classmethod
-    def register_main_app(cls, app):
+    def register_main_app(cls, app):  # must register a QApplication instance or class to which stylesheet is applied
         cls.main_app = app
 
     @classmethod
-    def load_theme(cls, theme=None):
+    def load_theme(cls, theme=None):  # used to load theme
 
         if theme is None:
             try:
-                print("NOT")
                 with open(cls.current_theme_file) as file:
                     theme = int(file.read())
 
-            except Exception:
+            except Exception as e:
+                print(f"Exception: {e}")
                 theme = 1
 
         if theme not in [0, 1]:
@@ -75,7 +80,6 @@ class ImagePaths:
             theme_file = file.read()
 
         try:
-            print("WRITEING")
             with open(cls.current_theme_file, 'w') as file:
                 file.write(str(theme))
 
@@ -86,10 +90,8 @@ class ImagePaths:
         cls.main_app.setStyleSheet(theme_file)
         cls.notify_theme_change()
 
-        print("THEME: ", theme)
-
     @classmethod
-    def register_icon_class(cls, icon_class):
+    def register_icon_class(cls, icon_class):  # register classes that needs to be notified od change in the theme
         cls.icon_classes.add(icon_class)
 
     @classmethod

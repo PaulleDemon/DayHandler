@@ -1,9 +1,9 @@
 import sys
-import Routine
+import TabHolderWindow
 
 from PyQt5 import QtWidgets
-from ImagePaths import ImagePaths
-from DataBaseOperations import DBHandler
+from Utils.ThemeController import ThemeController
+from Utils.DataBaseOperations import DBHandler
 
 
 def main():
@@ -12,13 +12,13 @@ def main():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ImagePaths.register_main_app(app)
-    ImagePaths.load_theme()
+    ThemeController.register_main_app(app)
+    ThemeController.load_theme()
 
-    win = Routine.TabbedWidget()
+    win = TabHolderWindow.TabbedWidget()
     win.show()
 
-    ImagePaths.register_icon_class(win)
+    ThemeController.register_icon_class(win)
 
     sys.exit(app.exec())
 

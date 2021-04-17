@@ -2,21 +2,19 @@ import os
 import re
 import shutil
 
-import Utils
-import ImagePaths
+from Utils import Utils
 import concurrent.futures
 from CreateWindow import AddWindow
-from DataBaseOperations import DBHandler, Query
+from Utils.DataBaseOperations import DBHandler, Query
 
-from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 
-class SelectTodo(QtWidgets.QWidget):
-    """ This create the combobox with existing tags and a button to create new tags"""
+class SelectTag(QtWidgets.QWidget):
+    """ This create a combobox with existing tags and a button to create new tags"""
 
     def __init__(self, *args, **kwargs):
-        super(SelectTodo, self).__init__(*args, **kwargs)
+        super(SelectTag, self).__init__(*args, **kwargs)
 
         self.tag_image_dir = 'UserResources/tag_images'
         self.sql_file = 'UserResources/userTodo.db'
@@ -89,7 +87,6 @@ class SelectTodo(QtWidgets.QWidget):
     def get_tag(self):  # returns tag_name and image_path as a list
         try:
             if self.combo_box.itemText(0) != self.place_holder_text:
-                print("Current: ", self.combo_box.currentText())
                 current_tag = self.combo_box.currentText()
                 current_selected_tag = DBHandler.get_data(Query.get_tag_where, current_tag)[0]
                 return current_selected_tag
@@ -99,7 +96,6 @@ class SelectTodo(QtWidgets.QWidget):
             return None
 
 
-# todo: this should call DBHandler
 class NewTag(QtWidgets.QDialog):
     # creates a new tag window where the user will be asked to enter a tag name and an image
 
@@ -136,7 +132,7 @@ class NewTag(QtWidgets.QDialog):
         self.tag_image.setStyleSheet("QPushButton[mandatoryfield=True]{border: 1px solid red;}")
 
         self.tag_image.setMaximumWidth(100)
-        self.tag_image.clicked.connect(self.openFileDialog)
+        self.tag_image.clicked.connect(self.open_file_dialog)
 
         self.g_layout.addWidget(QtWidgets.QLabel("Tag Name:"), 0, 0)
         self.g_layout.addWidget(QtWidgets.QLabel("Select Images"), 0, 1)
@@ -162,18 +158,17 @@ class NewTag(QtWidgets.QDialog):
         self.v_layout.addLayout(self.g_layout)
         self.v_layout.addLayout(self.img_h_layout)
         self.v_layout.addLayout(self.ok_cancel_layout)
-        # self.v_layout.addStretch(1)
 
         self.filePath = ""
 
-    def openFileDialog(self):
+    def open_file_dialog(self):
         self.filePath = QtWidgets.QFileDialog.getOpenFileName(self, 'OpenFile',
                                                               filter="Images files (*.jpg *.gif *.png)")[0]
         self.img.load(self.filePath)
         self.img = self.img.scaled(200, 100, QtCore.Qt.KeepAspectRatio)
         self.img_lbl.setPixmap(self.img)
 
-    def get_tag(self):
+    def get_tag(self):  # returns tag name and file path
         return self.tag_name.text(), self.filePath
 
     def confirm(self):
@@ -225,17 +220,14 @@ class NewTag(QtWidgets.QDialog):
         self.accept()
 
 
-# todo: scroll the display of the event is not good looking there is lot of space between date and todo_scroll info
-# todo: display time in words
-# todo: add completed button
-class ToDoWidget(QtWidgets.QWidget):
+class EventDisplayer(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
     event_types = {"Goal": ["goal_page", Query.delete_goal_where_id, Query.update_goal_where_id],
                    "Project": ["project_page", Query.delete_project_where_id, Query.update_project_where_id],
                    "Todo": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
 
     def __init__(self, event_type: str, *args, **kwargs):
-        super(ToDoWidget, self).__init__(*args, **kwargs)
+        super(EventDisplayer, self).__init__(*args, **kwargs)
 
         self.setObjectName("EventDisplayer")
 
@@ -245,7 +237,6 @@ class ToDoWidget(QtWidgets.QWidget):
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
         self.backgroundFrame = QtWidgets.QFrame()
-        # self.backgroundFrame.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
 
         self.vlayout.addWidget(self.backgroundFrame)
 
@@ -261,7 +252,7 @@ class ToDoWidget(QtWidgets.QWidget):
         self.toDo_info.setWordWrap(True)
 
         self.event_type = QtWidgets.QLabel()  # used to specify the type of event when displaying in home page
-        self.event_type.setStyleSheet("color: #dee0e0; font-size: 12px;")
+        self.event_type.setStyleSheet("color: #787373; font-size: 12px;")
         self.event_type.setMaximumHeight(20)
 
         self.edit_btn = QtWidgets.QPushButton()
@@ -330,7 +321,8 @@ class ToDoWidget(QtWidgets.QWidget):
     def edit_event(self):
         window = AddWindow.AddWindow("Update")
         time, date = self.time_info.text().split("|")
-        date= Utils.convertDayNameToDate(date.strip())
+
+        date= Utils.convertDayNameToDate(date.strip(), input_format="%d (%a), %b, %Y")
 
         date = list(map(int, date.split("/")))
         time, period = time.split()
@@ -342,12 +334,8 @@ class ToDoWidget(QtWidgets.QWidget):
             query = self.event_types[self.type][2]
             select_date, select_time, goal_text, select_tag_name, select_tag_img_path = window.get_info()
 
-            def convert_to_24hrs(time):
-                time_24hrs = datetime.strptime(' '.join(map(str, time)), '%I %M %p').time()
-                return time_24hrs
-
             date = select_date.toString("yyyy-MM-dd")
-            time_24hrs = convert_to_24hrs(select_time)
+            time_24hrs = Utils.convert12hrsTo24hrs(' '.join(map(str, time)), '%I %M %p')
 
             date_time = f"{date} {time_24hrs}"
             DBHandler.update_data(query, *(date_time, select_tag_name, select_tag_img_path, goal_text), self.event_id)

@@ -1,9 +1,8 @@
-import datetime
-
-
 from PyQt5 import QtWidgets
-from Todo import TodoScrollArea, ToDoWidget
-from DataBaseOperations import DBHandler, Query
+
+from Utils import Utils
+from Todo import EventScrollArea, EventDisplayer
+from Utils.DataBaseOperations import DBHandler, Query
 from CreateWindow import AddWindow
 
 
@@ -14,7 +13,7 @@ class TodoPage(QtWidgets.QWidget):
 
         self.hLayout = QtWidgets.QHBoxLayout(self)
 
-        self.todo_scroll = TodoScrollArea.TodoScrollArea()
+        self.todo_scroll = EventScrollArea.EventScrollArea()
 
         self.create_new = QtWidgets.QPushButton("Add Todo")
         self.create_new.clicked.connect(self.create_new_todo)
@@ -31,23 +30,19 @@ class TodoPage(QtWidgets.QWidget):
         self.todo_scroll.delete_all()
 
         for info in todos:
-            goal = ToDoWidget.ToDoWidget("Todo")
+            goal = EventDisplayer.EventDisplayer("Todo")
             goal.set_info(*info)
             self.add_todo_to_scroll(goal)
 
-    def add_todo_to_scroll(self, todo: ToDoWidget.ToDoWidget):  # adds todos to scroll area
+    def add_todo_to_scroll(self, todo: EventDisplayer.EventDisplayer):  # adds todos to scroll area
         self.todo_scroll.add_event(todo)
 
     # todo_scroll: This method seems redundant in all the pages maybe think of making it a static
     def _add_todo(self, *args):  # adds todos to data base
         select_date, select_time, todo_text, select_tag_name, select_tag_img_path = args
 
-        def convert_to_24hrs(time):
-            time_24hrs = datetime.datetime.strptime(' '.join(map(str, time)), '%I %M %p').time()
-            return time_24hrs
-
         date = select_date.toString("yyyy-MM-dd")
-        time_24hrs = convert_to_24hrs(select_time)
+        time_24hrs = Utils.convert12hrsTo24hrs(' '.join(map(str, select_time)), input_format='%I %M %p')
 
         date_time = f"{date} {time_24hrs}"
         DBHandler.insert_to_table(Query.insert_to_todo, *(date_time, select_tag_name, select_tag_img_path, todo_text))
@@ -61,5 +56,4 @@ class TodoPage(QtWidgets.QWidget):
             DBHandler.notify("home_page")
 
     def db_changed(self):
-        print("Notified the change")
         self.load_todo()

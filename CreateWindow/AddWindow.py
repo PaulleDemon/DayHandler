@@ -1,11 +1,11 @@
 from PyQt5 import QtWidgets, QtCore
-from Todo import ToDoWidget
+from Todo import EventDisplayer
 from CreateWindow import TimePicker
 from datetime import datetime
 from CustomizedWidgets import TextBox
 
 
-# todo: add character limit to textbox
+# todo: timepicker widget should not open when the return key is pressed
 class AddWindow(QtWidgets.QDialog):
     """ This window creates the with calender time-picker, a tag-selector and a Text box"""
 
@@ -14,6 +14,7 @@ class AddWindow(QtWidgets.QDialog):
 
         self.setWindowTitle(create_btn_name)
         self.setObjectName("CreateWindow")
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
         self.setModal(True)  # Ensures that the window doesn't lose focus
@@ -33,20 +34,21 @@ class AddWindow(QtWidgets.QDialog):
         self.h_layout = QtWidgets.QHBoxLayout()
 
         self.calender = QtWidgets.QCalendarWidget()
+        self.calender.setFocusPolicy(QtCore.Qt.ClickFocus)
         today = QtCore.QDate().currentDate()
 
         self.date = today
         self.calender.setDateRange(today, QtCore.QDate(today.addYears(50)))
-
         self.calender.clicked.connect(self.set_date)
 
         self.time_btn = QtWidgets.QPushButton("12:00 PM")
+        self.time_btn.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.time_btn.clicked.connect(self.select_time)
 
         self.h_layout.addWidget(self.calender)
         self.h_layout.addWidget(self.time_btn)
 
-        self.tag = ToDoWidget.SelectTodo()
+        self.tag = EventDisplayer.SelectTag()
 
         self.text = TextBox.TextBox(maxChar=1500)
         self.text.setAcceptRichText(False)
@@ -68,7 +70,7 @@ class AddWindow(QtWidgets.QDialog):
         self.vLayout.addWidget(self.text)
         self.vLayout.addLayout(self.h_ok_cancel_layout)
 
-    def select_time(self):
+    def select_time(self):  # opens the time-picker widget
         timePicker = TimePicker.TimePicker(self)
 
         if timePicker.exec():
@@ -117,11 +119,10 @@ class AddWindow(QtWidgets.QDialog):
 
         self.accept()
 
-    # todo_scroll: instead of `self.tag.get_tag()` we must pass just the text and the image path
-    def get_info(self):
+    def get_info(self):  # returns the info such as date, time, text, tag
         return self.date, self.time, self.text.toPlainText(), *self.tag.get_tag()
 
-    def preset(self, *args):
+    def preset(self, *args): # This is preset text, time, tag in case user decides to edit the event
         date, time, tag_name, text = args
 
         date = QtCore.QDate(*date)
@@ -129,6 +130,7 @@ class AddWindow(QtWidgets.QDialog):
         self.calender.setSelectedDate(date)
         self.text.setText(text)
         self.tag.set_current_tag(tag_name)
+
         self.time = list(map(int, time[:2]))
         self.time.append(time[2])
         self.time_btn.setText(':'.join(time[:2])+f" {time[2]}")

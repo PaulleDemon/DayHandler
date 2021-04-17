@@ -12,6 +12,7 @@ class TimePicker(QtWidgets.QDialog):
         super(TimePicker, self).__init__(*args, **kwargs)
 
         self.setWindowTitle("Time Picker")
+        self.setObjectName("TimePicker")
         self.setModal(True)  # keeps focus on dialog until closed
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
 
@@ -107,7 +108,6 @@ class TimePicker(QtWidgets.QDialog):
         self.enable_minutes_clock()
 
     def change_minutes(self, value):
-        print("Value: ", repr(value))
         self.minutes = value
         self.minutes_btn.setText(value)
 

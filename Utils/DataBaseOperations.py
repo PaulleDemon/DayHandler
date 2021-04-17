@@ -100,7 +100,6 @@ class DBHandler:
 
     @classmethod
     def _add_table_db(cls, sql_query: Query):  # creates a new table if it doesn't exist
-        print("Query: ", sql_query)
         with sqlite3.connect(cls._sql_file, check_same_thread=False) as conn:
             conn.execute(sql_query)
             conn.commit()
@@ -128,19 +127,16 @@ class DBHandler:
 
     @classmethod
     def _get_data_from_db(cls, query: Query, *values):  # gets value from db
-        print("QUERY: ", query, values)
         with sqlite3.connect(cls._sql_file) as conn:
             curr = conn.cursor()
             curr.execute(query, *values)
             items = curr.fetchall()
-            print("Items Tag: ", items, curr.fetchone())
             conn.commit()
 
         return items
 
     @classmethod
     def get_data(cls, query: Query, *values):  # starts _get_data from another thread and returns the result
-        print("Query: ", query, values)
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future = executor.submit(cls._get_data_from_db, query, values)
             result = future.result()
@@ -190,15 +186,11 @@ class DBHandler:
         # if key provided notifies only particular class
 
         if key:
-            if key == "project_page":
-                print("PROJECT KEY")
+
             try:
                 cls.registered_classes[key].db_changed()
-                if key == "project_page":
-                    print("PROJECT KEY 23")
 
             except NameError:
-                print("NAME  ERROR")
                 raise NotImplementedError
 
             except KeyError:
@@ -214,3 +206,7 @@ class DBHandler:
 
                 except NameError:
                     raise NotImplementedError
+
+
+#  Note: This class could be simplified by just having one method to execute all the queries.
+#  But, for the sake of readability and ease of use its not done.
