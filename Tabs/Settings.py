@@ -1,7 +1,7 @@
 import os
 
-from ImagePaths import ImagePaths
-from DataBaseOperations import DBHandler, Query
+from Utils.ThemeController import ThemeController
+from Utils.DataBaseOperations import DBHandler, Query
 from PyQt5 import QtWidgets, QtCore
 from CustomizedWidgets import Switch
 from Todo.TagDisplayer import TagDisplayer
@@ -12,10 +12,7 @@ class Settings(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(Settings, self).__init__(*args, **kwargs)
 
-        self.sql_file = r"UserResources/userTodo.db"
-
         self.setObjectName("Settings")
-
         self.grid = QtWidgets.QGridLayout(self)
 
         self.switch_btn = Switch.Switch()
@@ -52,7 +49,6 @@ class Settings(QtWidgets.QWidget):
         try:
 
             for event in associated_event:
-                print("Event: ", event, associated_dict[event])
                 query, notify_page = associated_dict[event]
                 DBHandler.delete_data(query, tag_name)
                 DBHandler.notify(notify_page)
@@ -64,7 +60,7 @@ class Settings(QtWidgets.QWidget):
             os.remove(tag_img_path)
 
         except FileNotFoundError:
-            print("File not found")
+            pass
 
     def add_to_scroll_area(self, tag: TagDisplayer):
         self.tags_scroll_area.add_tag(tag)
@@ -75,13 +71,13 @@ class Settings(QtWidgets.QWidget):
     def change_theme(self):
 
         if self.switch_btn.isChecked():
-            ImagePaths.load_theme(0)
+            ThemeController.load_theme(0)
 
         else:
-            ImagePaths.load_theme(1)
+            ThemeController.load_theme(1)
 
     def set_switch_change(self):  # sets the switch_button to correct side
-        theme = ImagePaths.get_current_theme_index()
+        theme = ThemeController.get_current_theme_index()
         self.switch_btn.setChecked(not theme)
 
 
@@ -111,7 +107,6 @@ class AvailableTagScrollArea(QtWidgets.QWidget):
         return self.scroll_layout.count()
 
     def add_tag(self, todoWidget: TagDisplayer):  # adds todoWidget to scroll area
-        print("Got Tag: ", todoWidget.tag_name.text(), self.scroll_layout.count())
         self.scroll_layout.addWidget(todoWidget)
 
     def delete_at_index(self, index):

@@ -1,9 +1,10 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from DataBaseOperations import DBHandler, Query
-from ImagePaths import ImagePaths
+from Utils.DataBaseOperations import DBHandler, Query
 
 
 class TagDisplayer(QtWidgets.QWidget):
+    """ Displays tags in settings. This class is used to handle deletion of the tags"""
+
     DeleteTagSignal = QtCore.pyqtSignal(str, str, list)
 
     def __init__(self, tag_name, img_path, *args, **kwargs):
@@ -26,8 +27,8 @@ class TagDisplayer(QtWidgets.QWidget):
         self.f_layout.addRow(self.tag_name, self.tag_image)
         self.f_layout.addRow(self.deleteBtn)
 
-
     def delete_tag(self):
+        # checks if there are events associated with this tag, then sends a signal to settings class for deletion
         delete = QtWidgets.QMessageBox.No
 
         associates = ""
@@ -66,7 +67,6 @@ class TagDisplayer(QtWidgets.QWidget):
         associates = associate_msg.format(events=', '.join(associate_events))
         messageBox()
 
-        print("associated events", associate_events)
         if delete == QtWidgets.QMessageBox.Yes:
             self.DeleteTagSignal.emit(tag, self.img_path, associate_events)
             self.deleteLater()

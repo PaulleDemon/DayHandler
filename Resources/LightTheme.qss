@@ -146,7 +146,6 @@ QPushButton:hover{
     background-color: #045eb3;
 }
 
-
 QTabWidget>QWidget{
     background-color: #d7dbd7;
     color: #ffffff;
@@ -285,7 +284,15 @@ QMessageBox QPushButton{
 }
 
 #CreateWindow QPushButton:hover{
-    background-color: #377ebd;
+    background-color: #216fb5;
+}
+
+#TimePicker QPushButton:checked{
+    background-color: #0b5db0;
+}
+
+#TimePicker QPushButton:hover{
+    background-color: #0b5db0;
 }
 
 #CreateWindow QTextEdit{

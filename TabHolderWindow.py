@@ -1,14 +1,13 @@
-import sys
-
-from ImagePaths import ImagePaths
-from PyQt5 import QtWidgets, QtGui, QtCore
-from DataBaseOperations import DBHandler
+from Utils.ThemeController import ThemeController
+from PyQt5 import QtWidgets, QtGui
+from Utils.DataBaseOperations import DBHandler
 from CustomizedWidgets import HorizontalTabs
 from Tabs import HomeTab, TodoTab, ProjectsTab, GoalTab, Settings
 
 
 class TabbedWidget(QtWidgets.QWidget):
-    shown = False
+
+    """ widget that holds all the tabs"""
 
     def __init__(self, *args, **kwargs):
         super(TabbedWidget, self).__init__(*args, **kwargs)
@@ -40,24 +39,9 @@ class TabbedWidget(QtWidgets.QWidget):
         self.layout().addWidget(self.tabs)
         self.setMinimumSize(850, 450)
 
-    def load_icon(self):
-        self.tabs.setTabIcon(0, QtGui.QIcon(ImagePaths.get_image("home")))
-        self.tabs.setTabIcon(1, QtGui.QIcon(ImagePaths.get_image("todo")))
-        self.tabs.setTabIcon(2, QtGui.QIcon(ImagePaths.get_image("project")))
-        self.tabs.setTabIcon(3, QtGui.QIcon(ImagePaths.get_image("goal")))
-        self.tabs.setTabIcon(4, QtGui.QIcon(ImagePaths.get_image("settings")))
-
-
-# if __name__ == '__main__':
-#
-#     app = QtWidgets.QApplication(sys.argv)
-#     # app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
-#     with open(r"Resources/LightTheme.qss") as file:
-#         theme = file.read()
-#
-#     ImagePaths.set_theme(1)
-#     message = TabbedWidget()
-#     message.show()
-#     app.setStyleSheet(theme)
-#
-#     sys.exit(app.exec())
+    def load_icon(self):  # switches the icons of the tabs
+        self.tabs.setTabIcon(0, QtGui.QIcon(ThemeController.get_image("home")))
+        self.tabs.setTabIcon(1, QtGui.QIcon(ThemeController.get_image("todo")))
+        self.tabs.setTabIcon(2, QtGui.QIcon(ThemeController.get_image("project")))
+        self.tabs.setTabIcon(3, QtGui.QIcon(ThemeController.get_image("goal")))
+        self.tabs.setTabIcon(4, QtGui.QIcon(ThemeController.get_image("settings")))

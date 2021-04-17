@@ -1,16 +1,10 @@
-import threading
-import sqlite3
-import datetime
-import concurrent.futures
-
-from DataBaseOperations import DBHandler, Query
+from Utils import Utils
+from Utils.DataBaseOperations import DBHandler, Query
 from PyQt5 import  QtWidgets
-from Todo import TodoScrollArea, ToDoWidget
+from Todo import EventScrollArea, EventDisplayer
 from CreateWindow import AddWindow
 
 
-# todo_scroll register the goal page to DbHandler and notify it when values
-# are inserted to goal page and refresh this page
 class GoalPage(QtWidgets.QWidget):
 
     def __init__(self,  *args, **kwargs):
@@ -20,7 +14,7 @@ class GoalPage(QtWidgets.QWidget):
 
         self.hLayout = QtWidgets.QHBoxLayout(self)
 
-        self.goals = TodoScrollArea.TodoScrollArea()
+        self.goals = EventScrollArea.EventScrollArea()
         self.create_new = QtWidgets.QPushButton("Create New Goal")
         self.create_new.clicked.connect(self.create_new_goal)
 
@@ -36,22 +30,18 @@ class GoalPage(QtWidgets.QWidget):
         self.goals.delete_all()
 
         for info in goals:
-            goal = ToDoWidget.ToDoWidget("Goal")
+            goal = EventDisplayer.EventDisplayer("Goal")
             goal.set_info(*info)
             self.add_goal_to_scroll(goal)
 
-    def add_goal_to_scroll(self, goal: ToDoWidget.ToDoWidget):  # adds goal to scroll area
+    def add_goal_to_scroll(self, goal: EventDisplayer.EventDisplayer):  # adds goal to scroll area
         self.goals.add_event(goal)
 
     def _add_goal(self, *args):  # adds goal to data base
         select_date, select_time, goal_text, select_tag_name, select_tag_img_path = args
 
-        def convert_to_24hrs(time):
-            time_24hrs = datetime.datetime.strptime(' '.join(map(str, time)), '%I %M %p').time()
-            return time_24hrs
-
         date = select_date.toString("yyyy-MM-dd")
-        time_24hrs = convert_to_24hrs(select_time)
+        time_24hrs = Utils.convert12hrsTo24hrs(' '.join(map(str, select_time)), "%I %M %p")
 
         date_time = f"{date} {time_24hrs}"
         DBHandler.insert_to_table(Query.insert_to_goal, *(date_time, select_tag_name, select_tag_img_path, goal_text))
@@ -65,5 +55,4 @@ class GoalPage(QtWidgets.QWidget):
             DBHandler.notify("home_page")
 
     def db_changed(self):
-        print("Notified the change")
         self.load_goals()
