@@ -70,7 +70,6 @@ class Settings(QtWidgets.QWidget):
         self.tags_scroll_area.add_tag(tag)
 
     def db_changed(self):
-        print("Notified the change")
         self.load_tags()
 
     def change_theme(self):
