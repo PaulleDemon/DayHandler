@@ -110,6 +110,7 @@ class NewTag(QtWidgets.QDialog):
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
         self.setWindowTitle("Select Tag")
         self.setModal(True)
+        self.setObjectName("NewTag")
 
         self.setFixedSize(350, 250)
 
@@ -117,8 +118,8 @@ class NewTag(QtWidgets.QDialog):
         self.g_layout = QtWidgets.QGridLayout()
 
         self.messege_lbl = QtWidgets.QLabel('')
-        self.messege_lbl.setStyleSheet("QLabel{color: red;}")
-        self.messege_lbl.setMaximumHeight(10)
+        self.messege_lbl.setStyleSheet("QLabel{color: #e81034; font-size: 12px; min-height: 12px;}")
+        self.messege_lbl.setMinimumHeight(12)
         self.messege_lbl.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
 
         self.img_lbl = QtWidgets.QLabel()
@@ -263,9 +264,11 @@ class ToDoWidget(QtWidgets.QWidget):
         self.event_type.setStyleSheet("color: #dee0e0; font-size: 12px;")
         self.event_type.setMaximumHeight(20)
 
-        self.edit_btn = QtWidgets.QPushButton("🖊")
+        self.edit_btn = QtWidgets.QPushButton()
+        self.edit_btn.setObjectName("EditButton")
+
         self.delete_btn = QtWidgets.QPushButton()
-        self.delete_btn.setIcon(QtGui.QIcon(ImagePaths.ImagePaths.get_image("delete")))
+        self.delete_btn.setObjectName("DeleteButton")
 
         self.completed_btn = QtWidgets.QPushButton("Completed")
         self.completed_btn.setObjectName("CompletedBtn")

@@ -1,5 +1,6 @@
 import os
 
+from ImagePaths import ImagePaths
 from DataBaseOperations import DBHandler, Query
 from PyQt5 import QtWidgets, QtCore
 from CustomizedWidgets import Switch
@@ -22,17 +23,15 @@ class Settings(QtWidgets.QWidget):
 
         self.tags_scroll_area = AvailableTagScrollArea()
 
-        # self.setStyleSheet("QLabel{background-color: red;}")
-
         self.grid.addWidget(QtWidgets.QLabel("Theme: "), 0, 0, QtCore.Qt.AlignLeft)
         self.grid.addWidget(self.switch_btn, 0, 1, QtCore.Qt.AlignLeft)
 
         self.grid.addWidget(QtWidgets.QLabel("Tags: "), 1, 0, QtCore.Qt.AlignLeft)
         self.grid.addWidget(self.tags_scroll_area, 2, 0, 1, 2)
 
-
         self.tag_items = None
         self.load_tags()
+        self.set_switch_change()
 
     def load_tags(self):
 
@@ -75,7 +74,16 @@ class Settings(QtWidgets.QWidget):
         self.load_tags()
 
     def change_theme(self):
-        pass
+
+        if self.switch_btn.isChecked():
+            ImagePaths.load_theme(0)
+
+        else:
+            ImagePaths.load_theme(1)
+
+    def set_switch_change(self):  # sets the switch_button to correct side
+        theme = ImagePaths.get_current_theme_index()
+        self.switch_btn.setChecked(not theme)
 
 
 class AvailableTagScrollArea(QtWidgets.QWidget):

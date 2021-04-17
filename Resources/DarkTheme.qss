@@ -1,3 +1,7 @@
+QWidget{
+    background-color: #474747;
+}
+
 QScrollBar:horizontal
  {
      height: 15px;
@@ -146,19 +150,9 @@ QPushButton:hover{
     background-color: #882bd9;
 }
 
-
 QTabWidget>QWidget{
     background-color: #2b2b2b;
     color: #ffffff;
-}
-
-
-QTabBar>QWidget{
-    background-color: #2b2b2b;
-}
-
-#TodoScroll{
-    background-color: red;
 }
 
 QTabBar::tab {
@@ -177,9 +171,6 @@ QTabBar::tab:hover{
     background-color: #3b3d3d;
 }
 
-QTabBar>QWidget{  /*This does't work*/
-    background-color: #3b3d3b;
-}
 
 #TodoScroll QWidget, #Settings QWidget, #CreateWindow QWidget{  /*This is perfectly working*/
     background-color: #3b3d3d;
@@ -214,8 +205,15 @@ QTabBar>QWidget{  /*This does't work*/
 
 #EventDisplayer QPushButton{
     background-color: #57178f;
-    /*border-radius: 5px;
-    padding: 5px;*/
+
+}
+
+#EventDisplayer #DeleteButton{
+    image: url("Resources/Images/LightThemeImages/Delete_white.png");
+}
+
+#EventDisplayer #EditButton{
+    image: url("Resources/Images/LightThemeImages/Edit_white.png");
 }
 
 #EventDisplayer QPushButton:hover{
@@ -229,6 +227,10 @@ QTabBar>QWidget{  /*This does't work*/
 
 #EventDisplayer #CompletedBtn:hover{
     background-color: #28ab24;
+}
+
+#TagDisplayer QPushButton{
+    image: url("Resources/Images/LightThemeImages/Delete_white.png");
 }
 
 
@@ -289,6 +291,37 @@ QMessageBox QPushButton{
     border: 1px solid #094e94;
 }
 
+#NewTag{
+    color: #ffffff;
+    background-color: #343738;
+}
+
+#NewTag QLabel{
+    color: #ffffff;
+    background-color: transparent;
+}
+
+#NewTag QPushButton{
+    color: #ababab;
+    background-color: #57178f;
+}
+
+#NewTag QPushButton:hover{
+    background-color: #263aa3;
+}
+
+#NewTag QLineEdit{
+    color: #ffffff;
+    background-color: #425157;
+    border-radius: 2px;
+    border: 1px solid #4b4b57;
+    min-height: 30px;
+}
+
+#NewTag QLineEdit:focus{
+    border: 1px solid #1c6eba;
+}
+
 /* navigation bar */
 QCalendarWidget QWidget { background-color: red; }
 
@@ -302,6 +335,15 @@ QCalendarWidget QMenu {
     color: white;
     font-size: 14px;
     background-color: rgb(100, 100, 100);
+    border: 1px solid gray;
+}
+
+QCalendarWidget QMenu::item:disabled {
+    color: #9c9595;
+}
+QCalendarWidget QMenu::item:enabled {
+    color: #ffffff;
+    selection-background-color: #969595;
 }
 
 QCalendarWidget QMenu:disabled {
@@ -437,4 +479,22 @@ QComboBox::down-arrow {
 
 QComboBox::down-arrow:on, QComboBox::down-arrow:hover, QComboBox::down-arrow:focus {
   image: url(":/qss_icons/dark/rc/arrow_down.png");
+}
+
+/*This changes the buttons next month button style*/
+#qt_calendar_nextmonth{
+    qproperty-icon: url("Resources/Images/LightThemeImages/right_arrow_white.png");
+}
+
+#qt_calendar_nextmonth::hover{
+    background-color: #858383;
+}
+
+#qt_calendar_prevmonth{
+
+    qproperty-icon: url("Resources/Images/LightThemeImages/Leftarrow_white.png");
+}
+
+#qt_calendar_prevmonth::hover{
+    background-color: #858383;
 }

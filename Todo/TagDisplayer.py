@@ -9,14 +9,13 @@ class TagDisplayer(QtWidgets.QWidget):
     def __init__(self, tag_name, img_path, *args, **kwargs):
         super(TagDisplayer, self).__init__(*args, **kwargs)
 
-        # self.setStyleSheet("background-color: red;")
         self.setObjectName("TagDisplayer")
         self.f_layout = QtWidgets.QFormLayout(self)
         self.img_path = img_path
 
         self.tag_name = QtWidgets.QLabel(tag_name)
         self.tag_image = QtWidgets.QLabel()
-        self.deleteBtn = QtWidgets.QPushButton(icon=QtGui.QIcon(ImagePaths.get_image("delete")))
+        self.deleteBtn = QtWidgets.QPushButton()
         self.deleteBtn.clicked.connect(self.delete_tag)
 
         self.img = QtGui.QPixmap(self.img_path)

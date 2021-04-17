@@ -3,26 +3,22 @@ import Routine
 
 from PyQt5 import QtWidgets
 from ImagePaths import ImagePaths
-
-
-def load_theme(theme: int):
-    global app
-    with open(r"Resources/LightTheme.qss") as file:
-        theme = file.read()
-
-    ImagePaths.set_theme(1)
-    app.setStyleSheet(theme)
+from DataBaseOperations import DBHandler
 
 
 def main():
-    global app
+
+    DBHandler.initialize_files()
 
     app = QtWidgets.QApplication(sys.argv)
+
+    ImagePaths.register_main_app(app)
+    ImagePaths.load_theme()
 
     win = Routine.TabbedWidget()
     win.show()
 
-    load_theme(0)
+    ImagePaths.register_icon_class(win)
 
     sys.exit(app.exec())
 

@@ -17,9 +17,6 @@ class TabbedWidget(QtWidgets.QWidget):
         self.vlayout.setContentsMargins(0, 0, 0 , 0)
 
         self.tabs = HorizontalTabs.TabWidget()
-        self.tabs.setStyleSheet("QTabBar::tab {min-height: 250px; min-width: 50px}")  # todo_scroll: remove this and paste it in qss
-
-        DBHandler.initialize_files()
 
         self.home_page = HomeTab.HomePage()
         self.todo_page = TodoTab.TodoPage()
@@ -33,14 +30,22 @@ class TabbedWidget(QtWidgets.QWidget):
         DBHandler.register("todo_page", self.todo_page)
         DBHandler.register("settings", self.settings)
 
-        self.tabs.addTab(self.home_page, QtGui.QIcon(ImagePaths.get_image("home")), "Home Page")
-        self.tabs.addTab(self.todo_page, QtGui.QIcon(ImagePaths.get_image("todo")), "Todo page")
-        self.tabs.addTab(self.program_page, QtGui.QIcon(ImagePaths.get_image("project")), "Projects")
-        self.tabs.addTab(self.goal_page, QtGui.QIcon(ImagePaths.get_image("goal")), "Goals")
-        self.tabs.addTab(self.settings, QtGui.QIcon(ImagePaths.get_image("settings")), "Settings")
+        self.tabs.addTab(self.home_page, "Home Page")
+        self.tabs.addTab(self.todo_page, "Todo page")
+        self.tabs.addTab(self.program_page,  "Projects")
+        self.tabs.addTab(self.goal_page, "Goals")
+        self.tabs.addTab(self.settings, "Settings")
+        self.load_icon()
 
         self.layout().addWidget(self.tabs)
         self.setMinimumSize(850, 450)
+
+    def load_icon(self):
+        self.tabs.setTabIcon(0, QtGui.QIcon(ImagePaths.get_image("home")))
+        self.tabs.setTabIcon(1, QtGui.QIcon(ImagePaths.get_image("todo")))
+        self.tabs.setTabIcon(2, QtGui.QIcon(ImagePaths.get_image("project")))
+        self.tabs.setTabIcon(3, QtGui.QIcon(ImagePaths.get_image("goal")))
+        self.tabs.setTabIcon(4, QtGui.QIcon(ImagePaths.get_image("settings")))
 
 
 # if __name__ == '__main__':

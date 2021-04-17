@@ -171,7 +171,7 @@ QTabBar::tab {
 QTabBar::tab:selected{
     background-color: #949292;
     border-right: 5px solid blue;
-    }
+}
 
 QTabBar::tab:hover{
     background-color: #a3a3a3;
@@ -220,6 +220,14 @@ QTabBar>QWidget{  /*This does't work*/
     background-color: #045eb3;
 }
 
+#EventDisplayer #DeleteButton{
+    image: url("Resources/Images/DarkThemeImages/Delete_black.png");
+}
+
+#EventDisplayer #EditButton{
+    image: url("Resources/Images/DarkThemeImages/Edit_Black.png");
+}
+
 #EventDisplayer #CompletedBtn{
     background-color: #00998c;
     padding: 10px;
@@ -229,6 +237,9 @@ QTabBar>QWidget{  /*This does't work*/
     background-color: #3aa63a;
 }
 
+#TagDisplayer QPushButton{
+    image: url("Resources/Images/DarkThemeImages/Delete_black.png");
+}
 
 QMessageBox{
     background-color: #c9c9c9;
@@ -315,6 +326,7 @@ QCalendarWidget QMenu {
     color: white;
     font-size: 14px;
     background-color: #e6e6e6;
+    border: 1px solid gray;
 }
 
 QCalendarWidget QMenu::item:disabled {
@@ -451,7 +463,7 @@ QComboBox::down-arrow:on, QComboBox::down-arrow:hover, QComboBox::down-arrow:foc
 
 #qt_calendar_prevmonth{
 
-    qproperty-icon: url(Resources/Images/DarkThemeImages/Leftarrow_black.png);
+    qproperty-icon: url("Resources/Images/DarkThemeImages/Leftarrow_black.png");
 }
 
 #qt_calendar_prevmonth::hover{
