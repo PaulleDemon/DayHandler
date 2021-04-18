@@ -30,7 +30,7 @@ class TabbedWidget(QtWidgets.QWidget):
         DBHandler.register("settings", self.settings)
 
         self.tabs.addTab(self.home_page, "Home Page")
-        self.tabs.addTab(self.todo_page, "Todo page")
+        self.tabs.addTab(self.todo_page, "Event page")
         self.tabs.addTab(self.program_page,  "Projects")
         self.tabs.addTab(self.goal_page, "Goals")
         self.tabs.addTab(self.settings, "Settings")

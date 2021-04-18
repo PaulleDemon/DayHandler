@@ -1,8 +1,8 @@
 from PyQt5 import QtWidgets
 
 from Utils import Utils
-from Todo import EventDisplayer
-from Todo import EventScrollArea
+from Event import EventDisplayer
+from Event import EventScrollArea
 from CreateWindow import AddWindow
 from Utils.DataBaseOperations import DBHandler, Query
 

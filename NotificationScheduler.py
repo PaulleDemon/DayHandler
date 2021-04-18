@@ -1,6 +1,6 @@
 from plyer import notification
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.job import Job
+# from apscheduler.job import Job
 
 from Utils.DataBaseOperations import DBHandler, Query
 from datetime import datetime
@@ -11,19 +11,17 @@ class Notification:
 
     @classmethod
     def _notify(cls, title='title', msg='message'):
-        notification.notify(title=title, message=msg, timeout=30)
+        notification.notify(title=title, message=msg, timeout=30, app_icon=r"Resources/Remainder_icon.ico")
 
     @classmethod
     def schedule(cls, date_time, title, message):
         sched = BackgroundScheduler(daemon=True)
-        print("DATETIME: ", date_time)
         sched.add_job(cls._notify, 'date', run_date=date_time, id=str(sched), args=[title, message])
 
         # sched = Job(cls._notify, trigger='date', run_date=date_time, args=[title, message])
 
         sched.start()
         # sched.remove_job()
-        print("SCed", sched)
         cls.scheduled_lst.append(sched)
 
     @classmethod
@@ -43,10 +41,8 @@ class Notification:
             year, month, day = list(map(int, date.split('-')))
             hours, minutes, _ = list(map(int, time.split(':')))
             date_time_object = datetime(year=year, month=month, day=day, hour=hours, minute=minutes)
-            if  date_time_object > datetime.now():
-                cls.schedule(date_time_object, f"{event_type}({event_tag})", message)
-
-            print(f"day: {day}; month: {month}, day: {year}; time: {time}")
+            if date_time_object > datetime.now():
+                cls.schedule(date_time_object, f"{event_type} ({event_tag})", message)
 
     @classmethod
     def db_changed(cls):

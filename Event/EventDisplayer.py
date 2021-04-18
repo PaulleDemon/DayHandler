@@ -224,7 +224,7 @@ class EventDisplayer(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
     event_types = {"Goal": ["goal_page", Query.delete_goal_where_id, Query.update_goal_where_id],
                    "Project": ["project_page", Query.delete_project_where_id, Query.update_project_where_id],
-                   "Todo": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
+                   "Event": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
 
     def __init__(self, event_type: str, *args, **kwargs):
         super(EventDisplayer, self).__init__(*args, **kwargs)
@@ -335,7 +335,7 @@ class EventDisplayer(QtWidgets.QWidget):
             select_date, select_time, goal_text, select_tag_name, select_tag_img_path = window.get_info()
 
             date = select_date.toString("yyyy-MM-dd")
-            time_24hrs = Utils.convert12hrsTo24hrs(' '.join(map(str, time)), '%I %M %p')
+            time_24hrs = Utils.convert12hrsTo24hrs(' '.join(map(str, select_time)), '%I %M %p')
 
             date_time = f"{date} {time_24hrs}"
             DBHandler.update_data(query, *(date_time, select_tag_name, select_tag_img_path, goal_text), self.event_id)

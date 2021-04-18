@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from Todo import EventDisplayer
+from Event import EventDisplayer
 
 
 class EventScrollArea(QtWidgets.QWidget):

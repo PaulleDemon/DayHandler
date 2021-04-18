@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 
 from Utils import Utils
-from Todo import EventScrollArea, EventDisplayer
+from Event import EventScrollArea, EventDisplayer
 from Utils.DataBaseOperations import DBHandler, Query
 from CreateWindow import AddWindow
 
@@ -15,7 +15,7 @@ class TodoPage(QtWidgets.QWidget):
 
         self.todo_scroll = EventScrollArea.EventScrollArea()
 
-        self.create_new = QtWidgets.QPushButton("Add Todo")
+        self.create_new = QtWidgets.QPushButton("Add Event")
         self.create_new.clicked.connect(self.create_new_todo)
 
         self.hLayout.addWidget(self.todo_scroll)
@@ -30,7 +30,7 @@ class TodoPage(QtWidgets.QWidget):
         self.todo_scroll.delete_all()
 
         for info in todos:
-            goal = EventDisplayer.EventDisplayer("Todo")
+            goal = EventDisplayer.EventDisplayer("Event")
             goal.set_info(*info)
             self.add_todo_to_scroll(goal)
 
