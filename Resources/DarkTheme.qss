@@ -279,6 +279,12 @@ QMessageBox QPushButton{
     background-color: #6f2bab;
 }
 
+QDialog>QLabel{
+    color: #ffffff;
+    background-color: transparent;
+    font-size: 14px;
+}
+
 #TimePicker QPushButton:checked{
     background-color: #0b5db0;
 }

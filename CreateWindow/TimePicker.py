@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from . import ClockWidget
+from CustomizedWidgets import ClockWidget
 
 
 class TimePicker(QtWidgets.QDialog):

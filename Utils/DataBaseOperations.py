@@ -50,6 +50,10 @@ class Query:
     get_all_tables_by_date = "SELECT * FROM (SELECT 'Goal', * FROM goal UNION ALL SELECT 'Todo', * FROM todo) ORDER " \
                              "BY datetime ASC "
 
+    schedule_for_notification = "SELECT * FROM (SELECT 'Goal', tag_name, datetime, goal_text FROM goal UNION ALL " \
+                                "SELECT 'Todo', tag_name, datetime, todo_text FROM todo UNION ALL " \
+                                "SELECT 'Project', tag_name, datetime, project_text FROM project) ORDER BY datetime ASC"
+
 
 class DBHandler:
     _sql_file = r"UserResources/userTodo.db"
@@ -125,20 +129,30 @@ class DBHandler:
         if insert_query == Query.insert_to_tag:
             cls.notify("settings")
 
+        cls.notify("Notification")
+
+
     @classmethod
-    def _get_data_from_db(cls, query: Query, *values):  # gets value from db
+    def _get_data_from_db(cls, query: Query, *values, fetch_size=None):  # gets value from db
         with sqlite3.connect(cls._sql_file) as conn:
             curr = conn.cursor()
             curr.execute(query, *values)
-            items = curr.fetchall()
+
+            if fetch_size:
+                items = curr.fetchmany(fetch_size)
+
+            else:
+                items = curr.fetchall()
+
             conn.commit()
 
         return items
 
     @classmethod
-    def get_data(cls, query: Query, *values):  # starts _get_data from another thread and returns the result
+    def get_data(cls, query: Query, *values,
+                 fetch_size=None, ):  # starts _get_data from another thread and returns the result
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(cls._get_data_from_db, query, values)
+            future = executor.submit(cls._get_data_from_db, query, values, fetch_size=fetch_size)
             result = future.result()
 
         return result
@@ -154,6 +168,7 @@ class DBHandler:
         thread = threading.Thread(target=cls._delete_data_from_db, args=(query, where_value))
         thread.start()
         thread.join()
+        cls.notify("Notification")
 
     @classmethod
     def _update_date_from_db(cls, query, *args):  # updates value in database
@@ -164,6 +179,7 @@ class DBHandler:
     def update_data(cls, query, *args):
         thread = threading.Thread(target=cls._update_date_from_db, args=(query, args))
         thread.start()
+        cls.notify("Notification")
 
     @classmethod
     def get_notify_classes(cls):  # returns dict of all the classes registered
@@ -206,7 +222,6 @@ class DBHandler:
 
                 except NameError:
                     raise NotImplementedError
-
 
 #  Note: This class could be simplified by just having one method to execute all the queries.
 #  But, for the sake of readability and ease of use its not done.
