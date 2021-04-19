@@ -1,6 +1,6 @@
 # Remainder App
 
-This is a simple example of a remainder application were you can set a remainder and you will be notified about that event.
+This is a simple example of a remainder application using pyqt framework. Using this application you can set a remainder and you will be notified about that event.
 
 You can create Todo, Goals and projects to help you become more productive. 
 
