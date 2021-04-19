@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from Todo import EventDisplayer
+from Event import EventDisplayer
 from CreateWindow import TimePicker
 from datetime import datetime
 from CustomizedWidgets import TextBox
@@ -77,6 +77,7 @@ class AddWindow(QtWidgets.QDialog):
             _hour, _min, _period = timePicker.get_current_time()
             self.time = [_hour, _min, _period]
             self.time_btn.setText(timePicker.get_formatted_time())
+
 
     def set_date(self, qdate):
         self.date = qdate

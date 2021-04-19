@@ -293,6 +293,13 @@ QDialog>QLabel{
     background-color: #0b5db0;
 }
 
+#ClockWidget{
+    qproperty-TextColor: #edebeb;
+    qproperty-PointerColor: #f00222;
+    qproperty-ClockOutlineColor: #077f94; /*sets the drawing outline*/
+    qproperty-ClockColor: #474747; /*background color*/
+}
+
 #CreateWindow QTextEdit{
     color: #ffffff;
     background-color: #3b3d3d;

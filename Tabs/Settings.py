@@ -4,7 +4,7 @@ from Utils.ThemeController import ThemeController
 from Utils.DataBaseOperations import DBHandler, Query
 from PyQt5 import QtWidgets, QtCore
 from CustomizedWidgets import Switch
-from Todo.TagDisplayer import TagDisplayer
+from Event.TagDisplayer import TagDisplayer
 
 
 class Settings(QtWidgets.QWidget):

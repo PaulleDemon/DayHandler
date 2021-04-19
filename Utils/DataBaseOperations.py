@@ -47,11 +47,11 @@ class Query:
     update_todo_where_id = "UPDATE todo SET datetime=(?), tag_name=(?), tag_img_path=(?)," \
                            " todo_text=(?) WHERE id=(?)"
 
-    get_all_tables_by_date = "SELECT * FROM (SELECT 'Goal', * FROM goal UNION ALL SELECT 'Todo', * FROM todo) ORDER " \
+    get_all_tables_by_date = "SELECT * FROM (SELECT 'Goal', * FROM goal UNION ALL SELECT 'Event', * FROM todo) ORDER " \
                              "BY datetime ASC "
 
     schedule_for_notification = "SELECT * FROM (SELECT 'Goal', tag_name, datetime, goal_text FROM goal UNION ALL " \
-                                "SELECT 'Todo', tag_name, datetime, todo_text FROM todo UNION ALL " \
+                                "SELECT 'Event', tag_name, datetime, todo_text FROM todo UNION ALL " \
                                 "SELECT 'Project', tag_name, datetime, project_text FROM project) ORDER BY datetime ASC"
 
 

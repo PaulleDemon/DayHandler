@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
-from Todo import EventScrollArea
+from Event import EventScrollArea
 from Utils.DataBaseOperations import DBHandler, Query
-from Todo import EventDisplayer
+from Event import EventDisplayer
 
 
 class HomePage(QtWidgets.QWidget):

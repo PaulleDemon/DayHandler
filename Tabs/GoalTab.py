@@ -1,7 +1,7 @@
 from Utils import Utils
 from Utils.DataBaseOperations import DBHandler, Query
 from PyQt5 import  QtWidgets
-from Todo import EventScrollArea, EventDisplayer
+from Event import EventScrollArea, EventDisplayer
 from CreateWindow import AddWindow
 
 

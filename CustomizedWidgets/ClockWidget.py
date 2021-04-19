@@ -1,14 +1,13 @@
 import math
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtProperty
 
 
 class ClockWidget(QtWidgets.QWidget):
-
     """ Custom analog time picker abstract model must modify the members to make the clock"""
 
     clicked_signal = QtCore.pyqtSignal(str)
-    # r = 40.0
-    # r = 20.0
+
     r = 19.0
     current_index = 0
 
@@ -23,7 +22,6 @@ class ClockWidget(QtWidgets.QWidget):
         self.DELTA_ANGLE = (360 / len(self.L)) * (math.pi / 180)
 
         self.turn_angle = 5.25
-        # self.DELTA_ANGLE = 120
 
         font = self.font()
         font.setPointSize(14)
@@ -31,35 +29,72 @@ class ClockWidget(QtWidgets.QWidget):
         self.current_value = self.L[self.current_index]
         self.setFont(font)
 
+        self._text_color = QtGui.QColor("#ffffff")
+        self._pointer_color = QtGui.QColor("#c40202")
+
+        self._clock_outline_color = QtGui.QColor("#ffffff")
+        self._clock_bg_color = QtGui.QColor("#8f8b8b")
+
+        self.setObjectName("ClockWidget")
+
+    def text_color(self):
+        return self._text_color
+
+    def set_text_color(self, qcolor: QtGui.QColor):
+        self._text_color = qcolor
+
+    def pointer_color(self):
+        return self._pointer_color
+
+    def set_pointer_color(self, qcolor: QtGui.QColor):
+        self._pointer_color = qcolor
+
+    def clock_bg_color(self):
+        return self._clock_bg_color
+
+    def set_clock_bg_color(self, qcolor: QtGui.QColor):
+        self._clock_bg_color = qcolor
+
+    def clock_outline(self):
+        return self._clock_outline_color
+
+    def set_clock_outline(self, qcolor: QtGui.QColor):
+        self._clock_outline_color = qcolor
+
+    TextColor = pyqtProperty(QtGui.QColor, text_color, set_text_color)
+    PointerColor = pyqtProperty(QtGui.QColor, pointer_color, set_pointer_color)
+
+    ClockOutlineColor = pyqtProperty(QtGui.QColor, clock_outline, set_clock_outline)
+    ClockColor = pyqtProperty(QtGui.QColor, clock_bg_color, set_clock_bg_color)
+
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
 
-        R = min(self.rect().width(), self.rect().height()) / 2
+        r = min(self.rect().width(), self.rect().height()) / 2
         margin = 4
 
-        Rect = QtCore.QRectF(0, 0, 2 * R - margin, 2 * R - margin)
-        Rect.moveCenter(self.rect().center())
+        rect = QtCore.QRectF(0, 0, 2 * r - margin, 2 * r - margin)
+        rect.moveCenter(self.rect().center())
 
-        painter.setBrush(QtGui.QColor("gray"))
-        painter.drawEllipse(Rect)
+        painter.setPen(self._clock_outline_color)
+        painter.setBrush(self._clock_bg_color)
+        painter.drawEllipse(rect)
 
-        rect = QtCore.QRectF(0, 0, self.r+20, self.r+20)
+        rect = QtCore.QRectF(0, 0, self.r + 20, self.r + 20)
 
-        pointer_color = "#c40202"
-
-        if 0 <= self.current_index < len(self.L)+1:
+        if 0 <= self.current_index < len(self.L) + 1:
             c = self.center_by_index(self.current_index)
             rect.moveCenter(c)
-            pen = QtGui.QPen(QtGui.QColor(pointer_color))
+            pen = QtGui.QPen(self._pointer_color)
             pen.setWidth(5)
             painter.setPen(pen)
             painter.drawLine(c, self.rect().center())
 
-            painter.setBrush(QtGui.QColor(pointer_color))
+            painter.setBrush(self._pointer_color)
             painter.drawEllipse(rect.adjusted(5, 5, -5, -5))
 
-        painter.setPen(QtGui.QColor("white"))
+        painter.setPen(self._text_color)
         for index, i in enumerate(self.L):
             c = self.center_by_index(index)
             rect.moveCenter(c)
@@ -68,7 +103,7 @@ class ClockWidget(QtWidgets.QWidget):
                 painter.drawText(rect, QtCore.Qt.AlignCenter, str(i))
 
             else:
-                painter.setBrush(QtCore.Qt.white)
+                painter.setBrush(self._text_color)
                 painter.drawEllipse(QtCore.QRectF(rect.adjusted(22, 22, -22, -22)))
 
     def center_by_index(self, index):
@@ -107,4 +142,3 @@ class ClockWidget(QtWidgets.QWidget):
 
     def minumumSizeHint(self):
         return QtCore.QSize(100, 100)
-

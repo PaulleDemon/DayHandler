@@ -2,12 +2,10 @@ import sys
 import TabHolderWindow
 
 from NotificationScheduler import Notification
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from Utils.ThemeController import ThemeController
 from Utils.DataBaseOperations import DBHandler
 
-
-# todo: create Notification, Create a icon
 
 def main():
     DBHandler.initialize_files()
@@ -23,6 +21,7 @@ def main():
 
     win = TabHolderWindow.TabbedWidget()
     win.setWindowTitle("Remainder")
+    win.setWindowIcon(QtGui.QIcon(r"Resources/Remainder_icon.ico"))
     win.show()
 
     ThemeController.register_icon_class(win)
