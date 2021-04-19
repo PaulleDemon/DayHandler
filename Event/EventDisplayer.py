@@ -222,7 +222,7 @@ class EventDisplayer(QtWidgets.QWidget):
     """ Widget that adds information, tag and time about an event"""
     event_types = {"Goal": ["goal_page", Query.delete_goal_where_id, Query.update_goal_where_id],
                    "Project": ["project_page", Query.delete_project_where_id, Query.update_project_where_id],
-                   "Event": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
+                   "Todo": ["todo_page", Query.delete_todo_where_id, Query.update_todo_where_id]}
 
     def __init__(self, event_type: str, *args, **kwargs):
         super(EventDisplayer, self).__init__(*args, **kwargs)
