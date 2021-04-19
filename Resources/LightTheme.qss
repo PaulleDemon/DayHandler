@@ -268,7 +268,6 @@ QMessageBox QPushButton{
     background-color: transparent;
 }
 
-
 #CreateWindow QFrame{
     border-radius: 0px;
     background-color: #ededed;
@@ -288,6 +287,18 @@ QMessageBox QPushButton{
     background-color: #216fb5;
 }
 
+#CreateWindow QTextEdit{
+    color: #000000;
+    background-color: #c2c2c2;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #37506b;
+}
+
+#CreateWindow QTextEdit:focus{
+    border: 1px solid #094e94;
+}
+
 #TimePicker QPushButton:checked{
     background-color: #0b5db0;
 }
@@ -304,18 +315,44 @@ QMessageBox QPushButton{
     qproperty-ClockColor: #c9c9c9; /*background color*/
 }
 
-#CreateWindow QTextEdit{
+
+#CreateWindow #NewTag{
+    background-color: #c5c8c9;
+}
+
+#NewTag QLabel{
     color: #000000;
-    background-color: #c2c2c2;
-    font-size: 18px;
-    border-radius: 5px;
-    border: 1px solid #37506b;
+    background-color: transparent;
 }
 
-#CreateWindow QTextEdit:focus{
-    border: 1px solid #094e94;
+#NewTag QPushButton{
+    color: #ffffff;
+    background-color: #388cd6;
 }
 
+#NewTag QPushButton:hover{
+    background-color: #263aa3;
+}
+
+#NewTag QPushButton[mandatoryfield="True"]{
+border: 1px solid red;
+}
+
+#NewTag QLineEdit{
+    color: #ffffff;
+    background-color: #425157;
+    border-radius: 2px;
+    border: 1px solid #4b4b57;
+    min-height: 30px;
+}
+
+#NewTag QLineEdit:focus{
+    border: 1px solid #1c6eba;
+}
+
+#NewTag QLineEdit[mandatoryfield="True"]{
+    border: 1px solid red;
+ }
 
 /* header row */
 QCalendarWidget QWidget {
