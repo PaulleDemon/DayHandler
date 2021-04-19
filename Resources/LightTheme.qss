@@ -296,6 +296,14 @@ QMessageBox QPushButton{
     background-color: #0b5db0;
 }
 
+#ClockWidget{
+    qproperty-TextColor: #403e3e;
+    qproperty-PointerColor: #e6e6e6;
+
+    qproperty-ClockOutlineColor: #57757a;
+    qproperty-ClockColor: #c9c9c9; /*background color*/
+}
+
 #CreateWindow QTextEdit{
     color: #000000;
     background-color: #c2c2c2;
