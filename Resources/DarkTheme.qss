@@ -188,14 +188,14 @@ QTabBar::tab:hover{
     background-color: #882bd9;
 }
 
-#EventDisplayer QWidget{
+#EventDisplayer QFrame{
     background-color: rgba(37, 38, 51, 100);
 }
 
 #EventDisplayer QLabel{
     background-color: transparent;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 #EventDisplayer QPushButton{
@@ -255,9 +255,6 @@ QMessageBox QPushButton{
     background-color: transparent;
 }
 
-/*#CreateWindow QWidget{
-
-}*/
 
 #CreateWindow QFrame{
     border-radius: 0px;
@@ -314,7 +311,7 @@ QDialog>QLabel{
 
 #NewTag{
     color: #ffffff;
-    background-color: #343738;
+    background-color: #5e6061;
 }
 
 #NewTag QLabel{
@@ -331,6 +328,10 @@ QDialog>QLabel{
     background-color: #263aa3;
 }
 
+#NewTag QPushButton[mandatoryfield="True"]{
+border: 1px solid red;
+}
+
 #NewTag QLineEdit{
     color: #ffffff;
     background-color: #425157;
@@ -342,6 +343,10 @@ QDialog>QLabel{
 #NewTag QLineEdit:focus{
     border: 1px solid #1c6eba;
 }
+
+#NewTag QLineEdit[mandatoryfield="True"]{
+    border: 1px solid red;
+ }
 
 /* navigation bar */
 QCalendarWidget QWidget { background-color: red; }

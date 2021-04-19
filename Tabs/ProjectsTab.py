@@ -47,7 +47,7 @@ class ProgramPage(QtWidgets.QWidget):
         DBHandler.insert_to_table(Query.insert_to_project, *(date_time, select_tag_name, select_tag_img_path, goal_text))
 
     def create_new_project(self):  # a pop-up asking user to create a new goal
-        window = AddWindow.AddWindow()
+        window = AddWindow.AddWindow(parent=self)
 
         if window.exec():
             self._add_project(*window.get_info())

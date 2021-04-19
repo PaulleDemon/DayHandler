@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 from Event import EventDisplayer
 from CreateWindow import TimePicker
 from datetime import datetime
@@ -48,7 +48,7 @@ class AddWindow(QtWidgets.QDialog):
         self.h_layout.addWidget(self.calender)
         self.h_layout.addWidget(self.time_btn)
 
-        self.tag = EventDisplayer.SelectTag()
+        self.tag = EventDisplayer.SelectTag(self)
 
         self.text = TextBox.TextBox(maxChar=1500)
         self.text.setAcceptRichText(False)
@@ -78,7 +78,6 @@ class AddWindow(QtWidgets.QDialog):
             self.time = [_hour, _min, _period]
             self.time_btn.setText(timePicker.get_formatted_time())
 
-
     def set_date(self, qdate):
         self.date = qdate
 
@@ -92,8 +91,8 @@ class AddWindow(QtWidgets.QDialog):
             __hour, __minutes = map(int, time_12hrs.strftime("%H %M").split())
             return __hour <= _hour and __minutes <= _minutes
 
-        def error_msg_window(title, message):  # Shows an error dialog
-            msg_window = QtWidgets.QDialog()
+        def error_msg_window(self, title, message):  # Shows an error dialog
+            msg_window = QtWidgets.QDialog(self)
             msg_window.setModal(True)
             msg_window.setWindowTitle(title)
             msg_window.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
@@ -107,15 +106,15 @@ class AddWindow(QtWidgets.QDialog):
 
         if QtCore.QDate().currentDate() == self.date and check_time():
             #  check to make sure that time selected is an upcoming time
-            error_msg_window("Error", "Please select upcoming time")
+            error_msg_window(self, "Error", "Please select upcoming time")
             return
 
         if self.tag.get_tag() is None:
-            error_msg_window("Error", "Please select a tag")
+            error_msg_window(self, "Error", "Please select a tag")
             return
 
         if len(self.text.toPlainText()) < 5:
-            error_msg_window("Error", "Please Enter at least 5 characters in the text box")
+            error_msg_window(self, "Error", "Please Enter at least 5 characters in the text box")
             return
 
         self.accept()

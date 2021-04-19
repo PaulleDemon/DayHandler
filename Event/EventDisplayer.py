@@ -100,7 +100,7 @@ class NewTag(QtWidgets.QDialog):
     # creates a new tag window where the user will be asked to enter a tag name and an image
 
     def __init__(self, parent, *args, **kwargs):
-        super(NewTag, self).__init__(*args, **kwargs)
+        super(NewTag, self).__init__(parent, *args, **kwargs)
         self.parent = parent
 
         self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
@@ -114,7 +114,8 @@ class NewTag(QtWidgets.QDialog):
         self.g_layout = QtWidgets.QGridLayout()
 
         self.messege_lbl = QtWidgets.QLabel('')
-        self.messege_lbl.setStyleSheet("QLabel{color: #e81034; font-size: 12px; min-height: 12px;}")
+        self.messege_lbl.setStyleSheet("color: #e81034; font-size: 12px; min-height: 12px; background-color: "
+                                       "transparent")
         self.messege_lbl.setMinimumHeight(12)
         self.messege_lbl.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
 
@@ -124,12 +125,9 @@ class NewTag(QtWidgets.QDialog):
         self.img_lbl.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
 
         self.tag_name = QtWidgets.QLineEdit()
-        self.tag_name.setStyleSheet("QLineEdit[mandatoryfield=True]{border: 1px solid red;}")
-
         self.tag_name.setMaxLength(25)
 
         self.tag_image = QtWidgets.QPushButton("Add Images")
-        self.tag_image.setStyleSheet("QPushButton[mandatoryfield=True]{border: 1px solid red;}")
 
         self.tag_image.setMaximumWidth(100)
         self.tag_image.clicked.connect(self.open_file_dialog)
@@ -319,7 +317,7 @@ class EventDisplayer(QtWidgets.QWidget):
             self.notify()
 
     def edit_event(self):
-        window = AddWindow.AddWindow("Update")
+        window = AddWindow.AddWindow("Update", self)
         time, date = self.time_info.text().split("|")
 
         date= Utils.convertDayNameToDate(date.strip(), input_format="%d (%a), %b, %Y")

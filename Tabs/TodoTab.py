@@ -15,7 +15,7 @@ class TodoPage(QtWidgets.QWidget):
 
         self.todo_scroll = EventScrollArea.EventScrollArea()
 
-        self.create_new = QtWidgets.QPushButton("Add Event")
+        self.create_new = QtWidgets.QPushButton("Add Todo")
         self.create_new.clicked.connect(self.create_new_todo)
 
         self.hLayout.addWidget(self.todo_scroll)
@@ -30,7 +30,7 @@ class TodoPage(QtWidgets.QWidget):
         self.todo_scroll.delete_all()
 
         for info in todos:
-            goal = EventDisplayer.EventDisplayer("Event")
+            goal = EventDisplayer.EventDisplayer("Todo")
             goal.set_info(*info)
             self.add_todo_to_scroll(goal)
 
@@ -48,7 +48,7 @@ class TodoPage(QtWidgets.QWidget):
         DBHandler.insert_to_table(Query.insert_to_todo, *(date_time, select_tag_name, select_tag_img_path, todo_text))
 
     def create_new_todo(self):  # a pop-up asking user to create a new todo_scroll
-        window = AddWindow.AddWindow()
+        window = AddWindow.AddWindow(parent=self)
 
         if window.exec():
             self._add_todo(*window.get_info())
