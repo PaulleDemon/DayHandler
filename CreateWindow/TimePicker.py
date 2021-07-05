@@ -103,7 +103,7 @@ class TimeWidget(QtWidgets.QPushButton):
     def __init__(self, min=0, max=12, current=None, *args, **kwargs):
         super(TimeWidget, self).__init__(*args, **kwargs)
         self.range = list(range(min, max + 1))
-        print(self.range)
+
         if current:
             self.current = current
 
@@ -121,7 +121,7 @@ class TimeWidget(QtWidgets.QPushButton):
                 self.current += 1
 
         else:
-            print(self.current)
+
             if self.current > self.range[0]:
                 self.current -= 1
 
