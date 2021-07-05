@@ -1,6 +1,5 @@
 from plyer import notification
 from apscheduler.schedulers.background import BackgroundScheduler
-# from apscheduler.job import Job
 
 from Utils.DataBaseOperations import DBHandler, Query
 from datetime import datetime
@@ -26,6 +25,7 @@ class Notification:
 
     @classmethod
     def remove_all_schedules(cls):
+        print("REMOVING2")
         for sched in cls.scheduled_lst:
             sched.remove_job(job_id=str(sched))
 
@@ -33,7 +33,11 @@ class Notification:
     def load_from_db(cls):
         data = DBHandler.get_data(Query.schedule_for_notification, fetch_size=10)
 
+        print("First")
+
         cls.remove_all_schedules()
+
+        print("REMOVING")
 
         for value in data:
             event_type, event_tag, date_time, message = value
