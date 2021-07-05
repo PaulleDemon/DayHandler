@@ -2,7 +2,7 @@
 class ThemeController:
 
     """ This class controls the theme. Any theme change is to be handled by this class.
-    It also notifies theme change to registered classes"""
+    It also notifies theme change to registered classes """
 
     main_app = None  # must register main QApplication class
     icon_classes = set()  # register classes which has icon associated with it
